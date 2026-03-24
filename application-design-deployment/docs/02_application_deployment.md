@@ -61,16 +61,17 @@ lang:   en
 
 
 # Application types
-- CSC academic projects – Finnish HEIs and state research institutes
+- **CSC academic projects** – Finnish HEIs and state research institutes
    - National infrastructure (Roihu, Pouta, Allas, ...)
    - LUMI through Finnish allocation
-- EuroHPC – students, researchers, businesses from eligible countries
+- **EuroHPC** – students, researchers, businesses from eligible countries
    - Any EuroHPC system (LUMI, MareNostrum5, Jupiter, ...) 
    - **Development** – get your code up to speed (~4000 node-h)
    - **Benchmark** – prove it runs well at scale (~2000 node-h)
    - **Regular** – large-scale campaign (up to ~200,000 node-h)
    - **Extreme** – hero runs (beyond ~200,000 node-h)
 - Pilot – new machines, for the brave
+- (Check your national-level options!)
 
 
 # Application contents
@@ -86,77 +87,144 @@ lang:   en
 
 # Procedure
 <div class=column style=width:42%>
-- Application and review
+- **Application** and review
    - Technical evaluation
    - Scientific review
    - Ranking, decision (sometimes rebuttal)
 - Project setup
-- Project operations
+- **Project operations**
 - Reporting
+- **Acknowledgement** in research outputs
 </div>
 
 <div class=column style=width:56%>
-<img src="images/EuroHPC_Regular_Access_cycle_2026.png" align=right width=100%/>
+<img src="images/EuroHPC_Regular_Access_cycle_2026.png" align=left width=100%/>
 </div>
 
 
-# Performance properties – on "paper"
+# Performance properties – on 'paper'
 
-How do you ensure your code is performing well and not wasting these precious resources?
+How do you ensure your **code is performing well** and not wasting these precious resources?
 
 Step 0: study the computing centre's recommendations
-- Hardware properties
-   - Number of threads
+
+- **Hardware** properties
+   - Number of threads, tasks, GPUs, ... 
    - Memory size and layout
    - Network layout and properties
-- Software stack
+- **Software** stack
    - Compiler families and versions
    - MPI implementations and versions
    - Useful libraries
 
 
 # Performance properties – in practice
-- Investigate the optimal distribution of tasks, threads
-- Use a small but representative setup
+- Determine the **optimal distribution of tasks and threads**, binding, etc.
+- Use a small but **representative setup**
 - Proceed systematically
-- Record your findings for future reference
+- **Record your findings** for future reference
 - Investigate if something feels off
+
+-  *So, covering ideas like measure first where the bottleneck is before doing any optimization (could be I/O too).*
+
+
+# Example: task – thread balance on one node
 
 
 # Perfomance properties – scaling
 How efficiently is your code running in parallel?
+
 - Weak scaling:
     - Start with a problem run on a single core/CPU/GPU/node
-    - Multiply **both** problem size **and** core/CPU/GPU/node count by *n*
+    - **Multiply** both **problem size** and core/CPU/GPU/node count by *n*
     - Plot execution time vs. problem size: **should be flat**
 - Strong scaling:
     - Start with problem run on a small amount of resources
-    - Run fixed problem size with increasing amount of resources
+    - Run **fixed problem size** with increasing amount of resources
     - Plot execution time vs. amount of resources used: **should be inversely proportional**
 
 
-# General workflows
+# Example – weak scaling
 
+
+# Example – strong scaling
+
+
+# General workflows
 - Many different ways of using HPC
 - Common steps/workflows:
    - Building and testing
    - Preparing the job
-   - Monitoring and profiling
+   - Data flow, in and out
+   - Profiling and monitoring
    - Troubleshooting
 
+
 # Building and testing
+- Almost always based on **modules**
+- If lucky, `module load <my-software>`
+- **Dependencies**: load if available, build otherwise
+- **Build** your software
+- Start with recommended modules and optimisation flags
+- Test first that it yields **correct results, then performance**!
+
 
 # File system and data
+- Familiarise yourself with the file system
+   - **Layout**: where to put the code & libraries, where to run
+   - **Quotas**: how much data, how many files can be stored
+   - **Properties**: storage, high parallel performance, node-local, ...
+- Set up your file system
+   - Folder structure (understandable naming and hierarchy!)
+   - Properties (e.g., Lustre striping)
+- Prepare/transfer input data
+- Plan timely **data transfer** out
+
 
 # Job input and output
+- Prepare **configuration files** and **input data**
+- Prepare **job scripts**
+- Plan **documentation** of your run campaign
+   - Archive code versions, inputs, configurations
+   - Keep all logs and system output/error files
+   - Keep track of phases, changes, incidents
+- Plan **post-run** steps
+   - Analysis
+   - Transfers, backups, archival of metadata and data
 
-# Monitoring and profiling
--  So, covering ideas like measure first where the bottleneck is before doing any optimization (could be I/O too).
 
-- Disk quotas
-- I/O performance
-- Computing performance
-- Memory footprint
+# Start the job!
+- Submit your job(s) to the queueing system!
+- Patience...
+   - `squeue --me`
+   - `squeue --me  -o "%F %t %S %u %j %Z"` <br>
+     `ARRAY_JOB_ID ST START_TIME USER NAME WORK_DIR`
+   - `sinfo`
+
+
+# Code runs! – Profiling & monitoring
+- Detailed performance analysis usually has overheads incompatible with production performance
+- It can be useful to **monitor** some metrics with lightweight tools
+    - Ensure the code and the system work as intended
+- 'Basic' health checks:
+    - Is the job proceeding (not hanging)?
+    - Is the performance as expected and homogeneous (no unexplained slowdowns)?
+    - Is the memory usage as expected (resident, high-water mark)?
+    - Is there enough disk quota?
+
+
+# Code runs! Monitoring & automatising
+- **Production campaigns** can be long and frustrating
+    - Long queueing times
+    - System downtimes
+    - Hardware and software failures (the more nodes used, the more frequent!)
+- **Streamline and automatise** procedures as much as possible!
+    - Automatised workflows
+    - Automatic warnings from system
+        - slurm email if available (not on LUMI...)
+        - Use available APIs to push notifications
+- **Do not spend 24/7 on the command line!**
+
 
 # Troubleshooting
 - In case of anomalies:
@@ -179,18 +247,24 @@ How efficiently is your code running in parallel?
     - What is abnormal
 
 
+# Quiz?
 
 
+# Conclusions 
+- Know and make use of the access paths available to obtain HPC resources
+- Familiarise yourself well with the system you are running on
+- Test thoroughly before committing large resources 
+- Adopt practices and tools to ease the burden of a single person
 
+# ...and lastly:
 
-# Code deployment and production
+<div class=column style=width:45%>
+**Have great success running your well-designed application on top supercomputers!**
+</div>
 
-
-
-# Performance and optimisation
-
-
-
+<div class=column style=width:43%>
+![Generated with Copilot.](images/copilot_running.jpeg)
+</div>
 
 
 
@@ -282,45 +356,6 @@ How efficiently is your code running in parallel?
 </div>
 
 
-# Code deployment and production: profiling
-- Detailed performance analysis usually has overheads incompatible with production performance
-- It can be useful to **monitor** some performance metrics/profiling with lightweight tools
-    - Ensure the code works as intended
-    - Ensure the system works as intended
-- "Basic" health checks:
-    - Is the job proceeding (not hanging)?
-    - Is the performance as expected and homogeneous (no unexplained slowdowns)?
-    - Is the memory usage as expected (resident, high-water mark)?
 
 
-# Code deployment and production: monitoring
-- Production campaigns can be long and frustrating
-    - Long queueing times
-    - System downtimes
-    - Hardware and software failures (the more nodes used, the more frequent!)
-- Streamline and automatise procedures as much as possible!
-    - Automatised workflows
-    - Automatic warnings from system
-        - slurm email if available (not on LUMI...)
-        - Use available APIs to push notifications
-- **Do not spend 24/7 on the command line!**
-
-
-
-# Quiz?
-
-
-# Conclusions 
-
-- Adopt practices and tools to ease the burden of a single person
-
-# ...and lastly:
-
-<div class=column style=width:45%>
-**Have great success running your well-designed application on top supercomputers!**
-</div>
-
-<div class=column style=width:45%>
-![](images/copilot_running.jpeg)
-</div>
 
