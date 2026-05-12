@@ -6,18 +6,39 @@ lang:   en
 
 # Kernel optimisation strategies
 
-1. Use existing libraries
-2. Minimise host-device data transfers
-3. Minimise device memory-compute unit data transfers
-4. Optimise for coalesced memory access
+1. Minimise host-device data transfers
+2. Use existing libraries
+4. Optimise memory accesses
 5. Avoid branching within warp
 6. Minimise number of active local variables 
 
-# 1. Libraries (I)
+
+# 1. Host-device data transfers
+
+### Peak theoretical bandwidth
+
+| Link | Host-device | Device memory | 
+|------|------------:|--------------:|
+| LUMI-G MI250x | 36 GB/s | 1600 GB/s|
+| PCIE4.0 x16 | $\sim$ 32 GB/s |  |
+| A100 (Mahti) |  | 2000 GB/s |
+| GH200(Roihu) | 450GB/s | 4TB/s |
 
 ::: notes
 
-- Before you optimize, use libraries
+- Be afraid of host-device memory copies!
+- Be aware of the 2-order of magnitude BW difference
+- Try your best to minimize/overlap them
+- Exceptions: GH200, MI300A (still there, but lighter penalty)
+- GH200 has 900GB/s nominally, but is both direction so 450-450
+
+:::
+
+# 2. Libraries (I)
+
+::: notes
+
+- Before you optimize kernels, use libraries
 
 :::
 
@@ -41,27 +62,11 @@ lang:   en
 | EIGEN  | EIGEN   | EIGEN   | C++ template library for linear algebra: matrices, vectors, numerical solvers |
 | NCCL   |         | RCCL    | Communications Primitives Library based on the MPI equivalents                |
 
-# 2. Host-device data transfers
 
-### Peak theoretical bandwidth
 
-| Link | Host-device | Device memory | 
-|------|------------:|--------------:|
-| LUMI-G MI250x | 36 GB/s | 1600 GB/s|
-| PCIE4.0 x16 | $\sim$ 32 GB/s |  |
-| A100 (Mahti) |  | 2000 GB/s |
-
-::: notes
-
-- Don't be afraid of host-device memory copies
-- But be aware of the 2-order of magnitude BW difference
-
-:::
-
-# 3. Device global memory access
+# 3. Optimize memory accesses: amount of memory operations
 
 - Matrix multiplication: temporary variable avoids K-1 global memory accesses
-- Fuse kernels if applicable
 
 ::::::{.columns}
 :::{.column width=49%}
@@ -89,7 +94,10 @@ lang:   en
 :::
 ::::::
 
-# 3. Device global memory access
+- Fuse kernels if applicable
+
+
+# 3. Optimize memory accesses: use the right memory
 
 **Device memory hierarchy**<br>
 **Fastest first**
@@ -98,7 +106,7 @@ lang:   en
 :::{.column width=60%}
 - Registers (per-thread-access)
 - Shared memory (per-block-access)
-- Local scratch memory (per-thread-access)
+- Local memory (per-thread-access)
 - Global memory (global access)
 :::
 :::{.column}
@@ -107,7 +115,7 @@ lang:   en
 ::::::
 
 
-# 3. Device global memory access
+# 3. Optimize memory accesses: use the right memory
 
 ## Device memory hierarchy
 
@@ -119,7 +127,7 @@ lang:   en
     - Very fast access
 :::
 ::: {.fragment}
-- Shared memory (per-block-access)
+- Shared memory (**LDS**, per-block-access)
     - User controlled with `__shared__` keyword
     - $\sim$ kilobytes
     - Fast access
@@ -129,7 +137,7 @@ lang:   en
 <div class="column">
 ::: {.fragment}
 - Local memory (per-thread-access)
-    - Used automatically if all registers are reserved
+    - Used automatically if all registers are reserved (register spilling)
     - Local memory resides in global memory
     - Very slow access
 :::
@@ -143,41 +151,7 @@ lang:   en
 
 ---
 
-## MI250x Compute Units (CU)
-::::::{.columns}
-
-:::{.column width=40%}
-
-- 64 kiB of **local data share** (LDS) memory
-- 800 *scalar registers* (**SGPR**, 12.6 kiB)
-  - up to 102 per warp
-- 16 kiB of L1 cache
-:::
-
-:::{.column width=59%}
-![](img/coarse_CU.svg){.center width=120%}
-:::
-::::::
-
-- 4$\times$SIMD units, 16 threads per SIMD unit
-  - 128 kiB *vector register* (**VGPR**) storage per SIMD unit $\Rightarrow$ 512 kiB register storage on CU
-  - 512 4-byte registers per thread (2 kiB). 
-- MI250x CU has matrix units, but they are tricky to program
-
-
-::: notes
-- Simplification
-- Ballpark sizes for registers, LDS and cache
-- MI250x GCD has 110 compute units
-  - Note: Cache is per CU
-  - CPU: 32 kiB L1 cache per core
-- Lot of register storage
-- MI250x has also matrix units but they are tricker. Need intrinsics.
-- `hipcc -Rpass-analysis=kernel-resource-usage`!
-:::
-
-
-# 4. Optimise for coalesced memory access
+# 3. Optimise memory accesses: Coalesce 
 
 - Device main memory accessed in batches of 64 or 128 bytes
 - If warp requests consecutive elements, then fewer global memory accesses are needed
@@ -235,7 +209,7 @@ double val = global_array[tid];
 
 ---
 
-# Local data share
+# 3. Oprimize memory accesses: LDS
 
 - Variable defined as `__shared__` is shared within block 
 - Use cases:
@@ -251,7 +225,7 @@ double val = global_array[tid];
 
 ---
 
-# Local data share: banked access
+# 3. Optimize memory accesses: LDS - banked access
 
 
 ::::::{.columns}
@@ -270,8 +244,26 @@ double val = global_array[tid];
 :::
 ::::::
 
+# 3. Optimize memory accesses: Atomic Operations 
 
-# 5. Avoid branching within warp
+- Ensures that updates are immune from data races
+- Can be done both to global and local and shared memory, depending on [HW support](https://rocm.docs.amd.com/projects/HIP/en/docs-6.3.3/reference/hardware_features.html)
+
+
+```cpp
+TYPE atomicAdd(TYPE* address, TYPE val)
+TYPE atomicMin(TYPE* address, TYPE val)
+...
+
+```
+
+where `TYPE` is one of `int`, `unsigned int`, `unsigned long`, `unsigned long long`, `float` or `double`[(see documentation)](https://rocm.docs.amd.com/projects/HIP/en/docs-6.3.3/how-to/hip_cpp_language_extensions.html)
+
+
+- Performances are very different if atomic is done on global or shared memory!
+
+
+# 4. Avoid branching within warp
 
 
 ::::::{.columns}
@@ -312,7 +304,8 @@ if ( ((tid/64)%2) == 0) {
 
 ---
 
-## Branching across warps
+ 
+# 4. Avoid branching across warps
 
 
 ::::::{.columns}
@@ -340,9 +333,8 @@ if(tid%2 == 0) {
 
   | Branching | time (µs) |
   |-----------|-----:|
-  | *No divergence* | 970 |
-  | *Branch divergence* | 1900|
-  | *single branch* | 1000 |
+  | *No divergence* | 14843 |
+  | *Branch divergence* | 28564|
 
 - `f_1` and `f_2` are sufficiently complicated $\Rightarrow$ *not* memory-bound
 
@@ -351,16 +343,18 @@ if(tid%2 == 0) {
 
 ::: notes
 - Exercise: Find out how complicated `f_1` and `f_2` need to be that branch divergence is an issue
+- demo available with how numbers were generated in this slide
 :::
 
 ---
 
-## Related: unroll loops
+# 4. Avoid branching: unroll loops
 
 - For loops introduce integer arithmetic per loop: add to loop counter & perform continuation test
 - Mitigate with `#pragma unroll` or `#pragma unroll <count>`
 - Compiler unrolls the loop by `count` or
 - if loop count is known compile time, loop may be completely unrolled
+- Compiler optimizations can sometime make this without you knowing it.
 
 ```cpp
 #pragma unroll 64
@@ -369,17 +363,16 @@ for(size_t k = 0; k < N; ++k)
 }
 ```
 
-# 6. Minimise number of active local variables 
+# 5. Minimise number of active local variables 
 
 ::: {.incremental}
 - Registers are allocated per block basis upon starting kernel
   - Fewer blocks on CU if too many registers are used ⇒ *reduced occupancy*
 - Local variables are stored in registers
-  - MI250x with 256 threads per block (smallest sensible): 2 kiB registers per thread
 - What happens if there is not enough registers? 
   - Variables are "spilled" to local memory on slow global device memory
 - Solution: 
-  - Reduce *occupancy*: Fewer threads per block (MI250x: >=256)
+  - Reduce *occupancy*: Fewer threads per block
   - Use LDS for temporary storage area
   - Divide kernels mindfully
 :::
@@ -499,7 +492,7 @@ The duration is `0.179 ms`  and the effective bandwidth `697 GB/s`
 # Other examples where shared memory is critical 
 
 - Matrix-matrix/vector multiplication
- 
+ si beh
   :::{.fragment}
   - Same elements are loaded in different threads
   :::
@@ -516,12 +509,12 @@ The duration is `0.179 ms`  and the effective bandwidth `697 GB/s`
 
 # Summary
 
+- Memory management is more important in GPU for performances than CPU.
+  - Remember to design your application taking that into account.
+  - Host-Device vs Device-Compute Unit bandwidth difference is 2 orders of magnitude
+  - Keep data in registers 
+  - Coalesce memory
+  - Use Local data share
 - Specialised libraries are highly optimised
   - Especially dense linear algebra (hipBLAS/cuBLAS) and FFTs.
-- Host-Device vs Device-Compute Unit bandwidth difference is 2 orders of magnitude
-- Keep data in registers 
-  - But there are a finite amount of registers!
-- Neighbouring threads access neighbouring memory locations
-  - Memory operations are coalesced
-- Local data share: a shared variable inside a block
 - Branching in warp: execute both branches
