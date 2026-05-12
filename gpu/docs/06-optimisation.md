@@ -98,7 +98,7 @@ ROCPROFV3 SUMMARY:
 
 1. Minimise host-device data transfers
 2. Use existing libraries
-3. Optimise memory accesses
+3. Optimize memory accesses
 4. Avoid branching within warp
 5. Minimise number of active local variables 
 
@@ -174,7 +174,7 @@ Matrix multiplication with hipBLAS
 
 :::
 
-# Common libraries (I)
+# 2. Common libraries (I)
 | NVIDIA   | HIP       | ROCm       | Description                                                                         |
 | -------- | --------- | ---------- | ----------------------------------------------------------------------------------- |
 | cuBLAS   | hipBLAS   | rocBLAS    | Basic Linear Algebra Subroutines                                                    |
@@ -185,7 +185,7 @@ Matrix multiplication with hipBLAS
 | CUB      | hipCUB    | rocPRIM    | Low level parallel primitives                                                       |
 
 
-# Common libraries (II)
+# 2. Common libraries (II)
 
 | NVIDIA   | HIP       | ROCm       | Description                                                                         |
 | -------- | --------- | ---------- | ----------------------------------------------------------------------------------- |
@@ -284,7 +284,7 @@ Matrix multiplication with hipBLAS
 
 ---
 
-# 3. Optimise memory accesses: Coalesce 
+# 3. Optimize memory accesses: Coalesce 
 
 - Device main memory is accessed in batches of 64 or 128 bytes
 - If warp requests consecutive elements, hardware can combine (**coalesce**) the requests into 
@@ -299,7 +299,7 @@ Matrix multiplication with hipBLAS
 
 ---
 
-## Uncoalesced memory access
+# Uncoalesced memory access
 
 ::::::{.columns}
 :::{.column width="50%"}
@@ -320,7 +320,7 @@ double val = global_array[8*tid];
 
 ---
 
-## Coalesced memory access
+# Coalesced memory access
 
 ::::::{.columns}
 :::{.column width="50%"}
@@ -380,7 +380,7 @@ __global__ void copy(int width, int height, float *A, float *B)
 </div>
 </small>
 
-# 3. Optimize memory accesses: use LDS 
+# 3. Optimize memory accesses: use LDS
 
 - Accessing shared memory is faster than the global device memory
 - Shared within a block
@@ -571,7 +571,7 @@ if ( (tid%2) == 0) {
 ---
 
  
-# 4. Avoid branching across warps
+# 4. Avoid branching within warps
 
 
 ::::::{.columns}
@@ -652,6 +652,6 @@ for(size_t k = 0; k < N; ++k)
   - Keep data in registers 
   - Coalesce memory
   - Use Local data share
-- Specialised libraries are highly optimised
+- Specialised libraries are highly optimized
   - Especially dense linear algebra (hipBLAS/cuBLAS) and FFTs.
 - Branching in warp: execute both branches
