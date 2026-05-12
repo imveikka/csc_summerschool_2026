@@ -22,7 +22,7 @@ lang:   en
 | LUMI-G MI250x | 36 GB/s | 1600 GB/s|
 | PCIE4.0 x16 | $\sim$ 32 GB/s |  |
 | A100 (Mahti) |  | 2000 GB/s |
-| GH200(Roihu) | 450GB/s | 4TB/s |
+| GH200(Roihu) | 450GB/s | 4 TB/s |
 
 ::: notes
 

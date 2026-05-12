@@ -289,8 +289,9 @@ hipMemcpy(x, dx, num_bytes, hipMemcpyDeviceToHost);
 
 // Implicit copy direction, runtime figures it out
 // from the virtual address of the pointer.
-// Recommended: dst and src pointers that do not match
-// the hipMemcpyKind results in undefined behavior.
+// Not Recommended: if mistakes are done it may result
+// in undefined behavior and it's easy to "lose track"
+// of what is host and what is device
 hipMemcpy(dx, x, num_bytes, hipMemcpyDefault);
 hipMemcpy(x, dx, num_bytes, hipMemcpyDefault);
 ```
