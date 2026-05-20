@@ -12,8 +12,8 @@ The read request are "strided", while the writes are kept coalesced in this exer
 - What do you think will be the best kernel? How do you expect the execution time to change when 
 the stride increases, and why?
 
-It is obviously the first one, without any stride. In that case, coalescing will be effective and 
-can be easily seen by the TCP_TOTAL_READ_sum counter: as soon as we break coalesced access we get 4x 
+It is the first one, without any stride. In that case, coalescing will be effective and 
+can be seen by the TCP_TOTAL_READ_sum counter: as soon as we break coalesced access we get 4x 
 read requests!
 
 
@@ -21,7 +21,7 @@ read requests!
 ### Q2
 - How many L2 read requests are issued?
 
-TCP_TCC_READ_REQ_sum is the counter to look for this one. As you can see, the best one is with the
+TCP_TCC_READ_REQ_sum is the counter to look for this one. The best one is with the
 first kernel, while it increases when we break coalescing.
 
 ### Q3
