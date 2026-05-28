@@ -267,7 +267,7 @@ Image: [top500.org](https://top500.org/)
 # Utilizing HPC in scientific research
 
 <!-- Copyright CSC -->
-![](img/sci.png){.center width=40%}
+![](img/sci.svg){.center width=40%}
 
 - **Goal for this school: everyone is able to write and modify HPC applications!**
 
