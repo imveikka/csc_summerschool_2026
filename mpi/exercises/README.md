@@ -41,6 +41,8 @@
 
 ### Further MPI topics
 
+These are optional bonus exercises.
+
 - Cartesian topology
   - [Cartesian grid process topology](12-cartesian-grid/)
   - [Message chain with Cartesian communicator](13-message-chain-cartesian/)
@@ -52,8 +54,9 @@
 - Persistent communication
   - [Message chain with persistent communication](17-message-chain-persistent/)
 
-### Debugging
+### Parallel debugging
 
+Bonus content: debugging MPI programs.
 - [Debugging](debugging/)
 
 ### Bonus
