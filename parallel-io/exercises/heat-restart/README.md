@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 ## Heat equation: checkpoint + restart with HDF5
 
 1. Add a feature to the heat equation solver program that enables one to

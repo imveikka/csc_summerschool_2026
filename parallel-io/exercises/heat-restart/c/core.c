@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2022 CSC - IT Center for Science Ltd. <www.csc.fi>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* Main solver routines for heat equation solver */
 
 #include <stdio.h>
