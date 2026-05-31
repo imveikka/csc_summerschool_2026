@@ -1,14 +1,17 @@
 /*
- * This code uses default stream
- * Task is to 
+ * This code in its current form uses the default stream
+ * Task is to:
  *   - create a stream
  *   - copy memory to/from device with that stream
- *   - launch kernel using that stream
+ *   - launch the provided kernel using that stream
+ *   - copy data back to the host using the stream
  *   - destroy the stream
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../error_checking.hpp"
+#include <cstring>
+#include <hip/hip_runtime.h>
+#include "error_checking.hpp"
 
 // GPU kernel definition
 __global__ void kernel(float *a, int n)
@@ -29,10 +32,8 @@ float max_error(float *a, int n)
   float max_err = 0;
   for (int i = 0; i < n; i++) {
     float error = fabs(a[i]-1.0f);
-    if (i<10) printf("%f ", a[i]);
     if (error > max_err) max_err = error;
   }
-  printf("\n");
   return max_err;
 }
 
@@ -46,23 +47,34 @@ int main() {
   float *a;
   float *d_a;
 
+  // Initializing the stream
   hipStream_t stream;
   HIP_ERRCHK(hipStreamCreate(&stream));
 
   a = (float*) malloc(N_bytes);
-  HIP_ERRCHK(hipMallocAsync((void**)&d_a, N_bytes, stream));
+  HIP_ERRCHK(hipMalloc((void**)&d_a, N_bytes));
 
   memset(a, 0, N_bytes);
 
+  // Copy data to device using the created stream
   HIP_ERRCHK(hipMemcpyAsync(d_a, a, N_bytes, hipMemcpyHostToDevice, stream));
+
   kernel<<<gridsize, blocksize,0,stream>>>(d_a, N);
   HIP_ERRCHK(hipGetLastError());
+
+  // Copy data back to host using the stream
   HIP_ERRCHK(hipMemcpyAsync(a, d_a, N_bytes, hipMemcpyDeviceToHost, stream));
 
+  // Synchronize host with the stream before printing
   HIP_ERRCHK(hipStreamSynchronize(stream));
-  printf("error: %f", max_error(a, N));
+
+  for (int i = 0; i < 10; i++)
+    printf("%f ", a[i]);
+  printf("\n");
+
+  printf("error: %f\n", max_error(a, N));
+
   HIP_ERRCHK(hipFree(d_a));
   free(a);
-  HIP_ERRCHK(hipStreamDestroy(stream));
-
+  HIP_ERRCHK(hipStreamDestroy(stream));float max_error(float *a, int n)
 }
