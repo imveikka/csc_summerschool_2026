@@ -1,4 +1,8 @@
 ---
+# SPDX-FileCopyrightText: 2013 CSC - IT Center for Science Ltd. <www.csc.fi>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 title:  Input/Output (I/O) in HPC
 event:  CSC Summer School in High-Performance Computing 2025
 lang:   en
