@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 __device__ float recip_factpow(float x, int n) {
   float retval(1);
   for (int k = 1; k<= n; ++k) {
