@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 // This header provides two helper macros for error checking
 // See the exercise skeletons and answers for usage examples.
 

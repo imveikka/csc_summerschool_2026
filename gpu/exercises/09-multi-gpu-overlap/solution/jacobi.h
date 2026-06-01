@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef JACOBI_H_
 #define JACOBI_H_
 
