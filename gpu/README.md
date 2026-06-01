@@ -36,6 +36,7 @@ See [demos](demos/) for demo codes referred to in the slides.
 - [2. Asynchronous kernels](exercises/04-streams-asynckernel)
 - [3. Asynchronous memory copy](exercises/04-streams-asyncmemcopy)
 - [4. Using events to time kernel execution](exercises/04-streams-timings)
+- [Bonus: Overlapping CPU/GPU computation](exercises/04-bonus-cpu-gpu-overlap)
 
 ### Memory management
 
