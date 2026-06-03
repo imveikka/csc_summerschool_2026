@@ -17,7 +17,14 @@ CC="CC -O3 -Wall"
 FT="ftn -O3"
 
 $CC -fopenmp hello-1.cpp -o hello.x
-srun -o hello-1.out ./hello.x
+srun -o data/hello-1.out ./hello.x
 
 $CC -fopenmp hello-2.cpp -o hello.x
-srun -o hello-2.out ./hello.x
+srun -o data/hello-2.out ./hello.x
+
+
+$FT -fopenmp hello-1.F90 -o hello.x
+srun -o data/hello-f-1.out ./hello.x
+
+$FT -fopenmp hello-2.F90 -o hello.x
+srun -o data/hello-f-2.out ./hello.x

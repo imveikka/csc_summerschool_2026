@@ -8,7 +8,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Single-thread execution
 
-1. See `execution-control-masked.cpp`. Example output:
+1. See `execution-control-masked.{cpp,F90}`. Example output:
 
        Main thread: initial var = 42
        Thread    1:   final var = 1
@@ -20,7 +20,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
    There is no implicit barrier after `masked` (or `master`).
 
-2. See `execution-control-masked-last.cpp`.
+2. See `execution-control-masked-last.{cpp,F90}`.
    Alternative to
 
        #pragma omp masked filter(id)
@@ -29,7 +29,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
        if (omp_get_thread_num() == id)
 
-3. See `execution-control-single.cpp`. Example output:
+3. See `execution-control-single.{cpp,F90}`. Example output:
 
        Main thread: initial var = 42
        Thread    1: initial var = 42
@@ -41,7 +41,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
    There is an implicit barrier after `single`.
 
-4. See `execution-control-single-nowait.cpp`. Example output:
+4. See `execution-control-single-nowait.{cpp,F90}`. Example output:
 
        Main thread: initial var = 42
        Thread    2:   final var = 2
@@ -56,7 +56,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Synchronization
 
-1. See `execution-control-barrier.cpp`. Example output:
+1. See `execution-control-barrier.{cpp,F90}`. Example output:
 
        Main thread: initial var = 42
        Thread    3: initial var = 42
@@ -72,7 +72,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Critical regions
 
-1. See `execution-control-critical.cpp`. Example output:
+1. See `execution-control-critical.{cpp,F90}`. Example output:
 
        Main thread: initial var = 42
        Thread    1: initial var = 42
@@ -89,7 +89,7 @@ SPDX-License-Identifier: CC-BY-4.0
    of a critical region.
 
    Alternative code for this particular case is shown in
-   `execution-control-critical-alt.cpp`.
+   `execution-control-critical-alt.{cpp,F90}`.
 
 2. The `atomic` is limited to updating a single value, and
    it's not applicable here.

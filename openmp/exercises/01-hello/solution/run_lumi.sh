@@ -36,3 +36,25 @@ srun --cpus-per-task=4 -o data/hello-2-cpus4.out ./hello.x
 
 $CC hello-3.cpp -o hello.x
 srun --cpus-per-task=4 -o data/hello-3-no-omp.out ./hello.x
+
+
+$FT -fopenmp ../hello.F90 -o hello.x
+
+srun --cpus-per-task=1 -o data/hello-f-cpus1.out ./hello.x
+srun --cpus-per-task=4 -o data/hello-f-cpus4.out ./hello.x
+
+export OMP_NUM_THREADS=2
+srun --cpus-per-task=4 -o data/hello-f-omp2.out ./hello.x
+unset OMP_NUM_THREADS
+
+srun --cpus-per-task=8 -o data/hello-f-cpus8.out ./hello.x
+
+
+$FT -fopenmp hello-1.F90 -o hello.x
+srun --cpus-per-task=4 -o data/hello-f-1-cpus4.out ./hello.x
+
+$FT -fopenmp hello-2.F90 -o hello.x
+srun --cpus-per-task=4 -o data/hello-f-2-cpus4.out ./hello.x
+
+$FT hello-3.F90 -o hello.x
+srun --cpus-per-task=4 -o data/hello-f-3-no-omp.out ./hello.x

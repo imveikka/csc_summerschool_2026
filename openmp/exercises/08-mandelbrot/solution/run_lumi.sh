@@ -18,13 +18,17 @@ set -xeuo pipefail
 rm -f ../*.x *.x
 
 CC="CC -O3 -Wall"
-FT="ftn -O3"
+FT="ftn -O3 -hipa0"
 
 #########################################################
 # Serial
 #########################################################
 for f in ../*.cpp; do
     $CC "$f" -o "${f%.cpp}.x"
+done
+for f in ../*.F90; do
+    [[ $(basename "$f") == "fake_omp.F90" ]] && continue
+    $FT "$f" -o "${f%.F90}-f.x"
 done
 
 for f in ../*.x; do
@@ -38,8 +42,13 @@ done
 #########################################################
 sed 's/schedule(dynamic)/collapse(2) schedule(dynamic)/g' mandelbrot-direct.cpp  > mandelbrot-direct-collapse2.cpp
 sed 's/schedule(dynamic)/schedule(static)/g' mandelbrot-blocked.cpp > mandelbrot-blocked-static.cpp
+sed 's/schedule(dynamic)/collapse(2) schedule(dynamic)/g' mandelbrot-direct.F90  > mandelbrot-direct-collapse2.F90
+sed 's/schedule(dynamic)/schedule(static)/g' mandelbrot-blocked.F90 > mandelbrot-blocked-static.F90
 for f in *.cpp; do
     $CC -fopenmp "$f" -o "${f%.cpp}.x"
+done
+for f in *.F90; do
+    $FT -fopenmp "$f" -o "${f%.F90}-f.x"
 done
 
 for f in *.x; do

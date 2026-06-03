@@ -10,7 +10,7 @@ Note for instructors: use `run*.sh` scripts to generate all the output files.
 
 ## Task: Improve the performance
 
-1. See `axpy-malloc.cpp`.
+1. See `axpy-firsttouch.{cpp,F90}`.
 
    Run with `$t` threads distributed across `$c` first cores on the node:
 
@@ -37,7 +37,7 @@ Note for instructors: use `run*.sh` scripts to generate all the output files.
 
    Note! For more reliable timing, it'd be better to increase the array size further and collect more accurate statistics by running axpy in a loop.
 
-2. See `axpy-unique_ptr.cpp` for an example.
+2. See `axpy-unique_ptr.cpp` (only relevant in C++).
 
 
 [^1]: The theoretical maximum bandwidth can be calculated as follows.

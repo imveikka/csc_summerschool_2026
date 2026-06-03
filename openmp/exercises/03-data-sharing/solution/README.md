@@ -34,7 +34,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Thread    1:   final var = 1
        Main thread:   final var = 1
 
-2. See `data-sharing-private.cpp`. The output is now:
+2. See `data-sharing-private.{cpp,F90}`. The output is now:
 
        Main thread: initial var = 42
        Thread    2: initial var = 0
@@ -54,7 +54,7 @@ SPDX-License-Identifier: CC-BY-4.0
     is unchanged.
 
 
-3. See `data-sharing-firstprivate.cpp`. The output is now:
+3. See `data-sharing-firstprivate.{cpp,F90}`. The output is now:
 
        Main thread: initial var = 42
        Thread    0: initial var = 42
@@ -70,10 +70,12 @@ SPDX-License-Identifier: CC-BY-4.0
     Note also that the value of `var` in the main thread
     is unchanged.
 
-4. See `data-sharing-shared.cpp`. The behavior is the same
+4. See `data-sharing-shared.{cpp,F90}`. The behavior is the same
    as with the initial code. The variable `var` is shared by default.
 
-5. See `data-sharing-default-none.cpp`. The compilation fails with an error:
+5. See `data-sharing-default-none.{cpp,F90}`. The compilation fails with an error:
+
+   C++:
 
        data-sharing-default-none.cpp: In function ‘int main()’:
        data-sharing-default-none.cpp:15:15: error: ‘var’ not specified in enclosing ‘parallel’
@@ -82,6 +84,19 @@ SPDX-License-Identifier: CC-BY-4.0
        data-sharing-default-none.cpp:13:13: note: enclosing ‘parallel’
           13 |     #pragma omp parallel default(none)
              |             ^~~
+
+   Fortran:
+
+       data-sharing-default-none.F90:14:83:
+
+          14 |   print '(A, I3, A, I0)', "Thread  ", omp_get_thread_num(), ": initial var = ", var
+             |                                                                                   ^
+       Error: ‘var’ not specified in enclosing ‘parallel’
+       data-sharing-default-none.F90:13:30:
+
+          13 |   !$omp parallel default(none)
+             |                              ^
+       note: enclosing ‘parallel’
 
    The `default(none)` dictates that there is no default data-sharing behaviour,
    but it needs to be declared explictly for each variable used in the parallel region.

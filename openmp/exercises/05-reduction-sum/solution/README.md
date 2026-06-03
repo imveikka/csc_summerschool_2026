@@ -26,7 +26,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Sum: 0.800947
        Calculation took 0.372 milliseconds
 
-2. See `sum-reduction.cpp`. In this example, the `reduction` clause can be added to either to the `parallel` or
+2. See `sum-reduction.{cpp,F90}`. In this example, the `reduction` clause can be added to either to the `parallel` or
    the `for`/`do` construct. The difference is the scope of reduction, which would matter if the parallel
    region would be larger.
    The output is now consitently the same with different numbers of threads (four threads in this example):
@@ -35,7 +35,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Sum: 1.812028
        Calculation took 0.339 milliseconds
 
-3. See `sum-atomic-naive.cpp` for one possible code. Output with four threads:
+3. See `sum-atomic-naive.{cpp,F90}` for one possible code. Output with four threads:
 
        Array size: 100000
        Sum: 1.812028
@@ -44,7 +44,7 @@ SPDX-License-Identifier: CC-BY-4.0
    The results are correct, but the code is very slow. The `atomic` clause in the loop
    body causes that the loop iterations are serialized.
 
-   See `sum-atomic-better.cpp` for a better implementation. Output with four threads:
+   See `sum-atomic-better.{cpp,F90}` for a better implementation. Output with four threads:
 
        Array size: 100000
        Sum: 1.812028

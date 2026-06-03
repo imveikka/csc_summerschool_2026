@@ -22,9 +22,9 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Library functions
 
-1. See `hello-1.cpp`. Output in `hello-1-cpus4.out`.
+1. See `hello-1.{cpp,F90}`. Output in `hello-1-cpus4.out`.
 
-2. See `hello-2.cpp`. Output in `hello-2-cpus4.out`.
+2. See `hello-2.{cpp,F90}`. Output in `hello-2-cpus4.out`.
 
    Note that each thread calls `omp_get_num_threads()` in this code.
    This is unnecessary and we'll see later how to execute this function call only with a single thread.
@@ -33,4 +33,4 @@ SPDX-License-Identifier: CC-BY-4.0
 
 1. The linking fails to undefined reference to `omp_get_thread_num()` and `omp_get_num_threads()`.
 
-2. See `hello-3.cpp` that includes `omp.h` header only if `_OPENMP` is defined and declares dummy functions otherwise.
+2. See `hello-3.{cpp,F90}`. The C++ version includes `omp.h` only if `_OPENMP` is defined and declares dummy functions otherwise. The Fortran version uses `omp_lib` module only if `_OPENMP` is defined and provides stub `contains` functions otherwise.

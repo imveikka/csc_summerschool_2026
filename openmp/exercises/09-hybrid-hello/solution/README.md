@@ -10,8 +10,8 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Add MPI parallelization
 
-1. See `hello-1.{cpp,out}`.
-2. See `hello-2.{cpp,out}`.
+1. See `hello-1.{cpp,F90}`.
+2. See `hello-2.{cpp,F90}`.
 
    Note that the exact value are implementation-dependent. The MPI standard
    ensures only that the values of the different thread support levels can

@@ -24,6 +24,9 @@ FT="ftn -O3"
 for f in ../*.cpp; do
     $CC "$f" -o "${f%.cpp}.x"
 done
+for f in ../*.F90; do
+    $FT "$f" -o "${f%.F90}-f.x"
+done
 
 for f in ../*.x; do
     srun -o $(basename "${f%.x}-ref.out") "$f"
@@ -33,8 +36,12 @@ done
 # MPI+OpenMP
 #########################################################
 sed 's/int tag = tid;/int tag = 123;/g' multiple-p2p-thread-tags.cpp > multiple-p2p-random.cpp
+sed 's/int tag = tid;/int tag = 123;/g' multiple-p2p-thread-tags.F90 > multiple-p2p-random.F90
 for f in *.cpp; do
     $CC -fopenmp "$f" -o "${f%.cpp}.x"
+done
+for f in *.F90; do
+    $FT -fopenmp "$f" -o "${f%.F90}-f.x"
 done
 
 for f in *.x; do

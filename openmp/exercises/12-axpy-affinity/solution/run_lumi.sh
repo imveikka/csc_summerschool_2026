@@ -20,7 +20,8 @@ rm -f ../*.x *.x
 CC="CC -O3 -Wall -std=c++20"
 FT="ftn -O3"
 
-$CC -fopenmp axpy-malloc.cpp -o axpy.x
+$CC -fopenmp axpy-firsttouch.cpp -o axpy.x
+$FT -fopenmp axpy-firsttouch.F90 -o axpy-f.x
 
 export OMP_PLACES=cores
 export OMP_PROC_BIND=spread
@@ -30,6 +31,7 @@ run() {
     t=$1
     c=$2
     OMP_NUM_THREADS=$t srun --cpus-per-task=$c -o data/$(printf "axpy-t%03d-c%03d.out" "$t" "$c") ./axpy.x 102400000
+    OMP_NUM_THREADS=$t srun --cpus-per-task=$c -o data/$(printf "axpy-f-t%03d-c%03d.out" "$t" "$c") ./axpy-f.x 102400000
 }
 
 run 1 1

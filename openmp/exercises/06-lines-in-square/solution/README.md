@@ -40,7 +40,10 @@ SPDX-License-Identifier: CC-BY-4.0
    We see that there is an issue with the random number sampling
    as multiple threads are getting the same random values.
 
-3. See `lines-working.cpp`. Output with four threads:
+   Note: Fortran's `random_number` shares a global state,
+   so the C++ race condition does not occur.
+
+3. See `lines-working.{cpp,F90}`. Output with four threads:
 
        Samples: 10000000
        Seed: 0 + thread number
@@ -51,7 +54,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Average distance: 0.521431
        Calculation took 65.212 milliseconds
 
-   This code uses `omp_get_thread_num()` to set a different
+   The C++ code uses `omp_get_thread_num()` to set a different
    seed for each thread in order to create a different series
    of random numbers in each thread.
 
@@ -61,3 +64,6 @@ SPDX-License-Identifier: CC-BY-4.0
    using large enough number of samples to converge the results.
    However, in some scenarios identical results might be desired,
    but implementing such will cost in terms of performance.
+
+   Note: Fortran's `random_number` behaves like that,
+   and the provided code is very slow.

@@ -3,11 +3,14 @@
 ! SPDX-License-Identifier: MIT
 
 program hello
+  use omp_lib
   implicit none
+  integer :: tid
 
   print '(A)', "Hello world!"
   !$omp parallel
-  print '(A)', "Hello from thread!"
+  tid = omp_get_thread_num()
+  print '(A, I0, A)', "Hello from thread ", tid, "!"
   !$omp end parallel
 
 end program hello

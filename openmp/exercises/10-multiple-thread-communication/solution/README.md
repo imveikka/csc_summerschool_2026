@@ -15,7 +15,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Rank 2 thread 0 received 0
        Rank 1 thread 0 received 0
 
-2. See `multiple-p2p-thread-tags`. Output is correct:
+2. See `multiple-p2p-thread-tags.{cpp,F90}`. Output is correct:
 
        Rank 2 thread 1 received 1
        Rank 2 thread 2 received 2
@@ -37,7 +37,7 @@ SPDX-License-Identifier: CC-BY-4.0
        Rank 1 thread 3 received 0
        Rank 1 thread 2 received 2
 
-3. See `multiple-p2p-thread-comms`. Output correct.
+3. See `multiple-p2p-thread-comms.{cpp,F90}`. Output correct.
 
    Note that the different communicators can use the same tag values safely.
 
@@ -45,9 +45,9 @@ SPDX-License-Identifier: CC-BY-4.0
 
 1. Output like above.
 
-2. See `multiple-coll-thread-comms`. Output correct.
+2. See `multiple-coll-thread-comms.{cpp,F90}`. Output correct.
 
-3. See `multiple-coll-single-comm`. Output correct.
+3. See `multiple-coll-single-comm.{cpp,F90}`. Output correct.
 
    Note that this implementation enforces that the MPI broadcasts are called in the same
    order across all threads. If this is not done, then the results are random.

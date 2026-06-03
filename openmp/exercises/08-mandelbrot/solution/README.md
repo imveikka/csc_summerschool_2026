@@ -15,11 +15,11 @@ SPDX-License-Identifier: CC-BY-4.0
      - `./mandelbrot-blocked.x 12`: 2974 ms
      - `./mandelbrot-adaptive.x 14`: 2220 ms
 
-2. See `mandelbrot-adaptive`. Runtime: 553 ms (16 threads).
+2. See `mandelbrot-adaptive.{cpp,F90}`. Runtime: 553 ms (16 threads).
 
    See `data/` directory for multiple output files, e.g., `grep Calc data/*.out`.
 
-3. See `mandelbrot-blocked`. The code distributes work block by block by using
+3. See `mandelbrot-blocked.{cpp,F90}`. The code distributes work block by block by using
    `collapse(2) schedule(dynamic)` and the speed-up is good: 242 ms (16 threads).
 
    Note that this distribution of work would be equivalent to the tasked recursive
@@ -33,7 +33,7 @@ SPDX-License-Identifier: CC-BY-4.0
    Thus, it is beneficial to pay the overhead of the dynamic scheduling to distribute
    the blocks to the threads during the runtime.
 
-4. See `mandelbrot-direct`. The code distributes only the outer loop with `schedule(dynamic)`,
+4. See `mandelbrot-direct.{cpp,F90}`. The code distributes only the outer loop with `schedule(dynamic)`,
    and the runtime is similar to the blocked code: 210 ms (16 threads).
 
    If we'd distribute the work over both loops with `collapse(2) schedule(dynamic)`,

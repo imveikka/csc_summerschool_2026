@@ -8,7 +8,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## Task: Parallelize with OpenMP task
 
-1. See `tasks.cpp`. Output with four threads:
+1. See `tasks.{cpp,F90}`. Output with four threads:
 
        Start with 0
        A: 0->1

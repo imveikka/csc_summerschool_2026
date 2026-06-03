@@ -25,7 +25,7 @@ The [solution directory](solution/) contains a model solution and discussion on 
 1. Study, compile, and run the provided code.
    Run the code with different numbers of threads to explore the race condition.
 
-2. Use the `reduction` clause to fix the race condition. Should the `reduction` clause be added to `parallel` or `for`? What's the difference?
+2. Use the `reduction` clause to fix the race condition. Should the `reduction` clause be added to `parallel` or `for`/`do`? What's the difference?
 
 3. Alternatively, use the `atomic` (or `critical`) clauses to fix the race condition.
    Compare the execution time to the `reduction` version. What is causing the difference?

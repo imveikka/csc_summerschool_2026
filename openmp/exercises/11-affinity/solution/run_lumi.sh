@@ -22,6 +22,10 @@ for f in ../*.cpp; do
     $CC -fopenmp "$f" -o "${f%.cpp}.x"
 done
 
+for f in ../*.F90; do
+    $FT -fopenmp "$f" -o "${f%.F90}-f.x"
+done
+
 export OMP_DISPLAY_AFFINITY=true
 export OMP_AFFINITY_FORMAT="Process %P level %L thread %0.4n/%0.4N on node %H core %A"
 srun ../hello.x
