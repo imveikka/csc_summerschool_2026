@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 ---
 title:  Welcome to Nuuksio
 event:  CSC Summer School in High-Performance Computing 2026
@@ -26,7 +32,7 @@ Map: <https://www.retkikartta.fi/> (Good for hiking!)
 # Surroundings of Hotelli Nuuksio
 
 <div style="position: absolute; left:0.0em; top:1.6em">
-![](img/map_close.svg){.center width=95%}
+![](img/map_close.svg){.center width=92%}
 </div>
 
 # Inside Hotelli Nuuksio
@@ -63,20 +69,20 @@ Map: <https://www.retkikartta.fi/> (Good for hiking!)
 
 - Please mark "x" for your name **every morning** in the list outside the lecture room
 - This is a hearbeat signal -- We want to keep track that no-one has gotten lost in the forest etc.
-  - Before you do, please save [the phone numbers of organizers](https://github.com/csc-training/summerschool/wiki#contacts) in your phone
+  - Before you do, please save the phone numbers of organizers in your phone
 
 # In case a ticks bites
 
 - Remove the tick attached to the skin immediately and monitor the bite site
-  - Please borrow thin tweezers from [the organizers](https://github.com/csc-training/summerschool/wiki#contacts) or ask help for removing it
+  - Please borrow thin tweezers from the organizers or ask help for removing it
 - It's advisable to do regular tick checks to detect tick at an early stage
-- See further information [here](https://www.mehilainen.fi/en/tick-bite) or [here](https://www.terveyskyla.fi/en/emergencyhub/self-care-instructions-in-sudden-health-problems/ticks)
+- See further information [here](https://www.terveyskyla.fi/en/emergencyhub/self-care-instructions-in-sudden-health-problems/ticks)
 
 # Code of conduct
 
 - We work in the spirit of [the CodeRefinery Code of Conduct](https://coderefinery.org/about/code-of-conduct/) in the summer school
 - In short: Please be nice and respectful with one another
-- Report any inappropriate behavior to [the organizers](https://github.com/csc-training/summerschool/wiki#contacts)
+- Report any inappropriate behavior to the organizers
 
 # Photography
 
@@ -94,15 +100,26 @@ Map: <https://www.retkikartta.fi/> (Good for hiking!)
 # Acknowledgements
 
 <div style="position: absolute; left:0.0em; top:3.0em">
-![](img/acknowledgements.svg){.center width=80%}
+![](img/csc-logo.svg){.center width=75%}
 </div>
+<div style="position: absolute; left:18.0em; top:5.5em">
+![](img/eurocc-logo.svg){.center width=45%}
+</div>
+<div style="position: absolute; left:-2.0em; top:14.0em">
+![](img/bull-logo.svg){.center width=50%}
+</div>
+<div style="position: absolute; left:15.0em; top:15.3em">
+![](img/eviden-logo.svg){.center width=55%}
+</div>
+
+
 
 # School content {.section}
 
-# Learning objectives
+# Learning outcomes
 
 - The goal is to build HPC expertise up to an intermediate/semi-advanced level during the school.
-- After the summer school, the participants will be able to:
+- After the summer school, participants should be able to:
   - Identify main parallel programming concepts
   - Create parallel MPI programs with C, C++, or Fortran programming languages
   - Create GPU-accelerated programs using HIP/CUDA

@@ -7,7 +7,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # CSC Summer School in High-Performance Computing 2026
 
-This is the material repository for the High-Performance Computing Summer School organized by [CSC - IT Center for Science](https://csc.fi/en/).
+This is the material repository for the High-Performance Computing Summer School organized by [CSC – IT Center for Science](https://csc.fi/en/).
 
 ## Practical information
 
@@ -15,7 +15,9 @@ The practical information is in the [wiki](../../wiki).
 
 ## Presentation slides
 
-The slides are available [here](https://csc-training.github.io/summerschool/).
+The slides are available in
+- GitHub Pages: https://csc-training.github.io/summerschool/
+- CSC Allas: https://a3s.fi/summerschool/site/index.html
 
 ## Exercises
 
@@ -48,11 +50,11 @@ The slides are available [here](https://csc-training.github.io/summerschool/).
 | Time  | Topic |
 | ----  | ----- |
 | 07:45 | Breakfast
-| 09:00 | [MPI](mpi)
+| 09:00 | [MPI: Point-to-point communication I](mpi)
 | 12:00 | Lunch
-| 13:00 | [MPI](mpi)
+| 13:00 | [MPI: Point-to-point communication II](mpi)
 | 15:00 | Refreshments (available until 17:00)
-| 15:30 | [MPI](mpi)
+| 15:30 | [MPI: Nonblocking communication](mpi)
 | 16:30 | Outdoor activity: Nuuksio Olympic Games (meetup at the Hotel lobby)
 | 18:00 | Dinner (available until 20:00)
 | 19:00 | Exercises (optional)
@@ -63,11 +65,11 @@ The slides are available [here](https://csc-training.github.io/summerschool/).
 | Time  | Topic |
 | ----  | ----- |
 | 07:45 | Breakfast
-| 09:00 | [MPI](mpi)
+| 09:00 | [MPI: Collective communication I](mpi)
 | 12:00 | Lunch
-| 13:00 | [MPI](mpi)
+| 13:00 | [MPI: Collective communication II](mpi)
 | 15:00 | Refreshments (available until 17:00)
-| 15:30 | [MPI](mpi)
+| 15:30 | [MPI: Further topics](mpi)
 | 17:00 | Outdoor activity
 | 18:00 | Dinner (available until 20:00)
 | 19:00 | Exercises (optional)
@@ -138,11 +140,12 @@ The slides are available [here](https://csc-training.github.io/summerschool/).
 | Time  | Topic |
 | ----  | ----- |
 | 07:45 | Breakfast
-| 09:00 | [GPU programming](gpu)
+| 09:00 | [OpenMP offload for GPU programming](gpu)
+| 11:00 | [Multi-GPU programming](gpu)
 | 12:00 | Lunch
-| 13:00 | [GPU programming](gpu)
+| 13:00 | [Multi-GPU programming](gpu)
 | 15:00 | Refreshments (available until 17:00)
-| 15:30 | [MPI + GPUs](gpu)
+| 15:30 | [Multi-GPU programming](gpu)
 | 17:00 | Outdoor activity
 | 18:00 | Dinner (available until 20:00)
 | 19:00 | Exercises (optional)

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #include <hip/hip_runtime.h>
 
 #include <cstdlib>
@@ -63,19 +67,18 @@ int main() {
 
 
   for(int i=1;i<=10;i++){
-    hipLaunchKernelGGL(transpose_SM_kernel, dim3(block_x, block_y),
-                      dim3(tile_dim, tile_dim), 0, 0, d_in, d_out, width,
-                      height);}
-
+      transpose_SM_kernel<<<dim3(block_x, block_y), dim3(tile_dim, tile_dim)>>>(
+          d_in, d_out, width, height);
+  }
 
   hipEventRecord(start_kernel_event, 0);
 
    for(int i=1;i<=10;i++){
-    hipLaunchKernelGGL(transpose_SM_kernel, dim3(block_x, block_y),
-                      dim3(tile_dim, tile_dim), 0, 0, d_in, d_out, width,
-                      height);}
-  
-  
+       transpose_SM_kernel<<<dim3(block_x, block_y),
+                             dim3(tile_dim, tile_dim)>>>(d_in, d_out, width,
+                                                         height);
+   }
+
   hipEventRecord(end_kernel_event, 0);
   hipEventSynchronize(end_kernel_event);
 

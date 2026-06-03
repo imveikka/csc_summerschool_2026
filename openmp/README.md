@@ -1,37 +1,36 @@
-## OpenMP programming exercises
+<!--
+SPDX-FileCopyrightText: 2010 CSC - IT Center for Science Ltd. <www.csc.fi>
 
-### Getting started with OpenMP
+SPDX-License-Identifier: CC-BY-4.0
+-->
 
-- [Hello world](omp-hello/)
-- [Work sharing and vector addition](work-sharing/)
+# OpenMP module
 
-### Library functions
+## Learning outcomes
 
-- [OpenMP library functions](lib-funcs/)
+After completing the module, participants should be able to:
+- Explain the OpenMP shared‑memory model and its use in modern supercomputers
+- Develop parallel applications using OpenMP constructs for loop- and task-based workloads
+- Diagnose and fix correctness issues in threaded codes
+- Profile and analyze performance of threaded applications
+- Run hybrid MPI+OpenMP applications efficiently on modern supercomputers, taking into account process and thread affinities and non-uniform memory access
 
-### Data sharing
+## Presentation slides
 
-- [Data sharing and parallel regions](data-sharing/)
-- [Race condition in parallel sum](race-condition/)
+Presentation slides are available [here](https://csc-training.github.io/summerschool/?open=openmp).
 
-### Reductions and execution controls
+## Demos
 
-- [Reduction](reduction/)
-- [Execution controls](execution-controls/)
+See [demos directory](demos/) for the demo codes referred to in the slides.
 
-### Heat equation with OpenMP
+## Exercises
 
-- [Fine grain parallelization](heat-equation/README_fine.md)
-- [Coarse grain parallelization](heat-equation/README_coarse.md)
+See [exercises directory](exercises/) for exercises.
 
-### OpenMP tasks
+## Web resources
 
-- [Simple tasking](simple-tasks/)
-- [Parallel Fibonacci](fibonacci/)
-- [Parallelizing Mandelbrot with tasks](mandelbrot/)
-
-### Hybrid MPI+OpenMP programming
-
-- [Hybrid Hello World](hybrid-hello/)
-- [(Bonus) Multiple thread communication](multiple-thread-communication/)
-- [Hybrid heat equation](heat-hybrid)
+- OpenMP homepage: <http://openmp.org/>
+- Online tutorials: <http://openmp.org/wp/resources/#Tutorials>
+- Specifications and examples: <https://www.openmp.org/specifications/>
+  - [v5.2 API Specification](https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5-2.pdf)
+  - [v5.2.2 Examples document](https://www.openmp.org/wp-content/uploads/openmp-examples-5.2.2-final.pdf)

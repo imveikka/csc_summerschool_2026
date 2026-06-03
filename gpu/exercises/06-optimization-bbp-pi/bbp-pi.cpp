@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 /*
  * This code calculates digits of PI in hexadecimal using
  * Bailey-Borwein-Plouffe formula.
@@ -13,7 +17,6 @@
 #include <iostream>
 #include "../error_checking.hpp"
 
-// This function looks suspicious
 __device__ int ipow_mod(int m, int n, int mod) {
   int ret(1);
   while ( n!=0) {
@@ -24,7 +27,6 @@ __device__ int ipow_mod(int m, int n, int mod) {
   return ret;
 }
 
-// This function looks even more suspicious
 __device__ float S(int j,int n) {
   float s = 0.0;
   for (int k = 0; k<n;++k) s += ipow_mod(16, n-k, 8*k+j) / (8.0*k+j);

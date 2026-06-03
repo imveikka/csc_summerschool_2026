@@ -231,7 +231,7 @@ Global dependencies
 - Linear algebra: $C = A \times B$
 
   <!-- Copyright CSC -->
-  ![](img/matmul.png){.center width=50%}
+  ![](img/matmul.svg){.center width=50%}
 
 - Number of communication events per process increases with number of execution units
 
@@ -268,7 +268,7 @@ Moving particles
 <br>
 <br>
 <!-- Copyright CSC -->
-![](img/smooth_particle.png){.center width=70%}
+![](img/smooth_particle.svg){.center width=70%}
 </div>
 
 

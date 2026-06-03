@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Prerequisite Knowledge
 
 To get most of the summer school, it is expected to have basic working knowledge on Linux and C or C++ (MPI and OpenMP modules of the school can also be completed optionally with Fortran instead of C or C++).

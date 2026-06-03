@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+#
+# SPDX-License-Identifier: MIT
+
+*-static.cpp
+*-static.F90
+*-collapse2.cpp
+*-collapse2.F90

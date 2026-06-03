@@ -180,7 +180,7 @@ cc main.c -o main
   - Building parts of a program and only rebuilding necessary parts
   - Building different version and configurations of a program
 
-![](img/depend.png){.center width=40%}
+![](img/depend.svg){.center width=40%}
 
 # Make rules
 

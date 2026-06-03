@@ -1,13 +1,19 @@
+<!--
+SPDX-FileCopyrightText: 2025 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 ---
 title:  Closing
-event:  CSC Summer School in High-Performance Computing 2025
+event:  CSC Summer School in High-Performance Computing 2026
 lang:   en
 ---
 
-# Learning objectives
+# Learning outcomes
 
 - The goal is to build HPC expertise up to an intermediate/semi-advanced level during the school.
-- After the summer school, the participants will be able to:
+- After the summer school, participants should be able to:
   - Identify main parallel programming concepts
   - Create parallel MPI programs with C, C++, or Fortran programming languages
   - Create GPU-accelerated programs using HIP/CUDA
@@ -17,8 +23,7 @@ lang:   en
 
 # LUMI project used during the school
 
-- Summer School LUMI project will end next week Thursday 10.7.2025
-- Summer School Mahti project will end next week Friday 11.7.2025
+- Summer School LUMI and Mahti projects will end next week Thursday 9.7.2026
 - Remember to transfer out all the data you wish to keep before the project ends
 
 
@@ -57,7 +62,7 @@ lang:   en
 # Keeping contact
 
 - The chat channel remains open while active, but note that the message retention period is 6 months
-  - <https://chat.csc.fi/group/CSC_Summer_School_in_HPC_2025>
+  - <https://chat.csc.fi/group/CSC_Summer_School_in_HPC_2026>
 - A LinkedIn group for present participants and alumni
   - <https://www.linkedin.com/groups/12051233>
 - Email works too
@@ -67,7 +72,7 @@ lang:   en
 
 - All material remains in the Summer School GitHub repository<br><https://github.com/csc-training/summerschool/>
   - See a zip file containing all the slides too
-- A static copy of 2025 content will be published as a release under GitHub
+- A static copy of 2026 content will be published as a release under GitHub
 
 
 # Upcoming CSC trainings
@@ -83,7 +88,7 @@ lang:   en
 
 # Bus to Helsinki
 
-- Bus to Helsinki leaves at 13. Please be at the hotel lobby by 12:55
+- Bus to Helsinki leaves at 13:00. Please be at the hotel lobby by 12:55
 - Please let us know if you are not taking the bus
 
 
@@ -105,8 +110,18 @@ lang:   en
 # Acknowledgements
 
 <div style="position: absolute; left:0.0em; top:3.0em">
-![](img/acknowledgements.svg){.center width=80%}
+![](img/csc-logo.svg){.center width=75%}
 </div>
+<div style="position: absolute; left:18.0em; top:5.5em">
+![](img/eurocc-logo.svg){.center width=45%}
+</div>
+<div style="position: absolute; left:-2.0em; top:14.0em">
+![](img/bull-logo.svg){.center width=50%}
+</div>
+<div style="position: absolute; left:15.0em; top:15.3em">
+![](img/eviden-logo.svg){.center width=55%}
+</div>
+
 
 # Thank you!
 

@@ -12,6 +12,7 @@
 *.html
 *.pdf
 *.sif
+*.bin
 build/
 core
 

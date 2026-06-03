@@ -60,14 +60,13 @@ jobs:
           <html lang="en">
           <head>
             <meta charset="UTF-8" />
-            <meta http-equiv="refresh" content="0; url=./main/" />
             <script>
-              window.location.replace('./main/');
+              window.location.replace('./main/index.html' + window.location.search + window.location.hash);
             </script>
             <title>CSC Summer School in High-Performance Computing</title>
           </head>
           <body>
-            <p>Redirecting to <a href="./main/">main</a></p>
+            <p>Redirecting to <a href="./main/index.html">main</a></p>
           </body>
           </html>
           EOF

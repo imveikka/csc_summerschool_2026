@@ -33,7 +33,7 @@ lang:   en
                        +& \frac{u(i,j-1)-2u(i,j)+u(i,j+1)}{(\Delta y)^2}
   \end{align*}
   $$
-  ![](img/t_field.png){.center width=40%}
+  ![](img/t_field.svg){.center width=40%}
 
 
 # Time evolution
@@ -53,14 +53,14 @@ lang:   en
 - Temperature at each grid point can be updated independently
 - Data can be distributed with domain decomposition
 
-  ![](img/domain.png){.center width=60%}
+  ![](img/domain.svg){.center width=60%}
 
 # Solving heat equation in parallel
 
 - Local data dependency: communication is needed for boundary layers
 - Information about neighbouring domains is stored in ”ghost layers”
 
-  ![](img/halo-exchange.png){.center width=50%}
+  ![](img/halo-exchange.svg){.center width=50%}
 
 - Before each update cycle, CPU cores communicate boundary data: <br>halo exchange
 

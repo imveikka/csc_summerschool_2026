@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 CSC - IT Center for Science Ltd. <www.csc.fi>
+#
+# SPDX-License-Identifier: MIT
+
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 FACTORY=docker
 OPTIONS=run -it --rm -v "$(ROOT_DIR)":"$(ROOT_DIR)":Z -w "$(ROOT_DIR)" ghcr.io/csc-training/slidefactory:3.3.1

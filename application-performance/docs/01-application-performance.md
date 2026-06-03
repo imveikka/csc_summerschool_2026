@@ -1,8 +1,39 @@
 ---
+# SPDX-FileCopyrightText: 2019 CSC - IT Center for Science Ltd. <www.csc.fi>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 title: Application performance
 event: CSC Summer School in High-Performance Computing 2025
 lang:  en
 ---
+
+# Performance analysis ("profiling")
+
+My code is too slow! What do I do?
+
+- Find out *where* the slow code segments are
+- Figure out *why* it's slow
+    - Suboptimal algorithm?
+    - Inefficient use of hardware features?
+- Focus optimization efforts where it matters!
+    - Long function that is only called once VS a short function that is called 1 000 000 times?
+
+Let's look at common **profiling methods** and **tools** for systematically answering these questions.
+
+<!-- # Tracing
+
+- Place markers or timestamps in code, either manually or automatically with tracing tools
+- Measure the wall-clock difference between two markers
+
+# Sampling
+
+- -->
+
+# TODO: slides about tracing vs sampling
+
+- Tracing vs sampling
+- instrumentation
 
 # Overview
 

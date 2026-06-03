@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #include <hip/hip_runtime.h>
 #include <stdio.h>
 
@@ -24,7 +28,7 @@ int main(void)
     // launch kernel
     dim3 blocks(32);
     dim3 threads(256);
-    hipLaunchKernelGGL(fill_, blocks, threads, 0, 0, n, x_, a);
+    fill_<<<blocks, threads>>>(n, x_, a);
 
     // copy data to the host and print
     hipMemcpy(x, x_, sizeof(double) * n, hipMemcpyDeviceToHost);

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: CC-BY-4.0
 
 title:  Introduction to GPU programming
-event:  Tools for High Performance Computing, University of Helsinki, 2026
+event:  CSC Summer School in High-Performance Computing 2026
 lang:   en
 ---
 
@@ -16,9 +16,9 @@ We will cover the following topics
 
 - What is a GPU and why should you care
 - How does the architecture of a GPU differ from that of a CPU
+- What are some of the implications of GPU hardware
 - How to use GPUs
 - What problems are a good fit for GPUs
-- (Bonus: Software - hardware mapping on GPUs)
 
 # Learning objectives
 
@@ -26,13 +26,13 @@ After this lecture you will understand
   \
   \
 
-- why GPUs are relevant for HPC
-- how GPUs differ from CPUs
-- how GPUs can be utilized
-- what problems map well to GPUs
-- (if time permits, how the software maps to hardware on a high level)
+- Why GPUs are relevant for HPC
+- How GPUs differ from CPUs
+- How programming GPUs differs from programming CPUs
+- How GPUs can be utilized
+- What problems map well to GPUs
 
-# GPUs: why and what? {.section}
+# GPUs: why? {.section}
 
 # Why use GPUs for HPC?
 
@@ -139,6 +139,114 @@ November 2025
 GPUs enable exascale ($10^{18}$ FLOPS)
 </div>
 
+# Runtimes of Taylor expansion, N = 0
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{0} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- No arithmetic: $y_i \gets 1$
+- Serial, OpenMP with 64 threads and GPU
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_0.png){.center width=200%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, N = 8
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{8} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- Serial, OpenMP with 64 threads and GPU
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_8.png){.center width=120%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, N = 16
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{16} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- Serial, OpenMP with 64 threads and GPU
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_16.png){.center width=120%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, serial
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{N} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- Serial
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_serial.png){.center width=120%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, OpenMP 64 threads
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{N} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- OpenMP 64 threads
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_omp.png){.center width=120%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, GPU
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{N} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- GPU
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_hip.png){.center width=120%}
+::::::
+:::::::::
+
+# Runtimes of Taylor expansion, all
+
+::::::::: {.columns}
+:::::: {.column width="40%"}
+
+- $y_i \gets \sum_{n = 0}^{N} \frac{x_i^n}{n!}$
+- $i = 1\dots$ vector size
+- All
+
+::::::
+:::::: {.column width="80%"}
+![](img/runtimes_all.png){.center width=120%}
+::::::
+:::::::::
+
+# CPU vs GPU: what's the difference? {.section}
+
 # What is a GPU?
 
 :::::: {.columns}
@@ -192,8 +300,6 @@ CPU and GPU on a single chip
 
 ![](img/async-cpu-gpu.png){.center width=100%}
 
-# GPU architecture {.section}
-
 # CPU architecture
 
 :::::: {.columns}
@@ -235,118 +341,75 @@ Die shot of MI250X (on the web page)
 
 https://www.amd.com/en/technologies/cdna.html#cdna2
 
+# CPU vs GPU threads
 
-# GPU vs CPU FLOPS (32 bit float)
+GPU code is usually written from the perspective of a single GPU thread
 
-| Processor | FLOP | Cores | SIMDs | Lanes | Frequency (GHz) | Peak Performance |
-|---|---|---|---|---|---|---|
-| EPYC 7763 | 2 | 64 | 2 | 8 | 2.25 | 4.6 TFLOPS |
-| EPYC 9965 | 2 | 192 | 2 | 16 | 2.25 | 27.6 TFLOPS |
-| MI250x | 2 | 220 | 4 | 16 | 1.7 | 47.9 TFLOPS |
-| H100 | 2 | 132 | 4 | 32 | 1.785 | 60.3 TFLOPS |
+Notice the lack of any for loops
 
-# GPU vs CPU FLOPS (64 bit float)
+```c++
+__global__ void saxpy(int n, float alpha, float *x, float *y) {
+    // What is my global thread ID?
+    const int tid = blockIdx.x * blockDim.x + threadIdx.x;
 
-| Processor | FLOP | Cores | SIMDs | Lanes | Frequency (GHz) | Peak Performance |
-|---|---|---|---|---|---|---|
-| EPYC 7763 | 2 | 64 | 2 | 4 | 2.25 | 2.3 TFLOPS |
-| EPYC 9965 | 2 | 192 | 2 | 8 | 2.25 | 13.8 TFLOPS |
-| MI250x | 2 | 220 | 4 | 16 | 1.7 | 47.9 TFLOPS |
-| H100 | 2 | 132 | 4 | 16 | 1.785 | 30.2 TFLOPS |
-
-# SIMD
-
-- SIMD = Single Instruction, Multiple Data
-- One operation applied to multiple data elements simultaneously
-- All lanes in a SIMD unit execute the same instruction on different data
-- Example: Add 8 numbers in parallel using 8 lanes
-- Fundamental for high performance computation
-  - If your code diverges (different if-else branches), performance degrades
-  - Uniform execution across lanes = maximum throughput
-
-# SIMD
-
-:::::: {.columns}
-::: {.column width="40%"}
-
-No divergence (illustrative example)
-  \
-  \
-```cpp
-for (auto i = 0; i < N; i++) {
-    c[i] = a[i] + b[i];
+    // Is my thread ID smaller than the length of the array?
+    if (tid < n) {
+        // Perform the operation, for this single ID
+        y[tid] = alpha * x[tid] + y[tid];
+    }
 }
 ```
-Throughput: 8
+
+# CPU vs GPU threads -- Very different beasts
+
+:::::: {.columns}
+::: {.column width="50%"}
+GPU threads
+
+- Very lightweight: cheap to switch
+- $N_{thr} = O(N_{data}) \approx 10^4 - 10^6$
+- Spawned automatically during kernel launch
+- Threads grouped hiearchically
+- Mapped to lanes of a SIMD unit
 
 :::
-::: {.column width="60%"}
+::: {.column width="50%"}
+CPU threads
 
-One cycle
-
-![](img/simd8wide.png){.center width=100%}
+- Context switch a heavy operation
+- $N_{thr} = O(N_{core}) \approx 10^1 - 10^2$
+- Spawned by the user/library
+- Threads can work independently
+- Mapped to cores
 :::
 ::::::
 
-# SIMD
+# CPU vs GPU threads -- Keeping HW busy
 
 :::::: {.columns}
-::: {.column width="40%"}
+::: {.column width="50%"}
+GPU
 
-Divergence (illustrative example)
-  \
-  \
-```cpp
-for (auto i = 0; i < N; i++) {
-    if ((i % 8) < 4)
-        c[i] = a[i] + b[i];
-    else
-        c[i] = a[i] * b[i];
-}
-```
-
-Throughput: 4
+- Launch many threads to oversubscribe hardware
+- In case of a stall, context switch to another thread to keep working
 
 :::
-::: {.column width="60%"}
+::: {.column width="50%"}
+CPU
 
-First cycle
+- Launch few threads: 1-2 per core
+- Attempt to reduce the number of stalls by any means necessary
+  - branch prediction
+  - instruction reordering
+  - large and sophisticated caches
+- As the last resort, context switch to another thread
 
-![](img/simd8wide-divergence1.png){.center width=100%}
-:::
-::::::
-
-# SIMD
-
-:::::: {.columns}
-::: {.column width="40%"}
-
-Divergence (illustrative example)
-  \
-  \
-```cpp
-for (auto i = 0; i < N; i++) {
-    if ((i % 8) < 4)
-        c[i] = a[i] + b[i];
-    else
-        c[i] = a[i] * b[i];
-}
-```
-
-Throughput: 4
-
-:::
-::: {.column width="60%"}
-
-Second cycle
-
-![](img/simd8wide-divergence2.png){.center width=100%}
 :::
 ::::::
 
 # GPU Architecture Implications: Memory Bandwidth
 
-More SIMDs = higher bandwidth requirement
+More computing units = higher bandwidth requirement
 
 :::::: {.columns}
 ::: {.column width="40%"}
@@ -364,7 +427,6 @@ More SIMDs = higher bandwidth requirement
 
 - Many parallel execution units require many parallel tasks
 - A serial algorithm only uses a fraction of GPU capacity
-- High performance requires scaling to hundreds of SIMD units
 - Not all problems parallelize easily
 
 # GPU Architecture Implications: High latency, high throughput
@@ -402,7 +464,7 @@ Image credit J. Lankinen
 
 # GPU Architecture Implications: Algorithmic Changes
 
-- Reduction step across a SIMD 16 lanes wide
+- Reduction step across a SIMD unit
 - Illustrative only, shows how different this is from a serial reduction
 
 :::::: {.columns}
@@ -424,349 +486,18 @@ for (auto i = 4; i > 0; i--) {
 :::
 ::::::
 
-# How to Use a GPU {.section}
-
 # How to Use a GPU: Overview
 
 Multiple layers of abstraction:
   \
   \
 
-1. GPU accelerated programs
-2. Parallel programming libraries
-3. High-level APIs
-4. Low-level APIs
-5. Assembly-like intermediate representations
-
-# How to Use a GPU: GPU-Accelerated Programs
-
-Use existing HPC software with GPU support
-
-Examples:
-
-- GROMACS -- Molecular dynamics simulations
-- LAMMPS -- Molecular dynamics simulations
-- Elmer -- CSC's open source Finite Element multi-physics simulation package
-
-# How to Use a GPU: Libraries – Algorithms
-
-rocTHRUST (AMD) / Thrust (NVIDIA)
-  \
-  \
-
-- Common GPU-accelerated algorithms
-- Reductions – Sum, max, min operations
-- Scan – Prefix sums and cumulative operations
-- Transformations – Apply functions element-wise
-- Sorting – Efficient parallel sort implementations
-
-# How to Use a GPU: Libraries – Algorithms
-
-rocTHRUST (AMD) / Thrust (NVIDIA)
-  \
-  \
-
-- Search – Binary search and set operations
-- Remove – Filter elements based on predicates
-- Fill/Generate – Initialize GPU memory
-- Gather/Scatter – Irregular memory access patterns
-- ForEach – Execute function on all elements
-
-# How to Use a GPU: Libraries – Linear Algebra
-
-rocBLAS (AMD) / cuBLAS (NVIDIA)
-  \
-  \
-
-- GPU implementations of BLAS (Basic Linear Algebra Subprograms)
-- Essential for matrix operations
-- Compatible with CPU BLAS interface
-- Extreme performance for dense matrices
-
-# How to Use a GPU: Libraries – Linear Algebra
-
-rocSOLVER (AMD) / cuSOLVER (NVIDIA)
-  \
-  \
-
-- GPU implementations of LAPACK routines
-- Higher-level solvers (LU, QR, SVD, eigenvalue decomposition)
-- Builds on BLAS infrastructure
-
-# How to Use a GPU: Libraries – Linear Algebra
-
-rocSPARSE (AMD) / cuSPARSE (NVIDIA)
-  \
-  \
-
-- Sparse matrix solvers and operations
-- Critical for problems with sparse structure
-- Significant memory and compute savings for sparse data
-
-# How to Use a GPU: High-Level APIs – OpenMP offloading
-
-```cpp
-#pragma omp target data map(tofrom:a[:N]) map(to:b[:N])
-#pragma omp target teams distribute parallel for
-for(size_t k = 0; k < N; ++k) {
-  a[k] = 1.25 * a[k];
-  a[k] += b[k];
-}
-```
-
-- Works with C/C++/Fortran
-- Vendor-supported on NVIDIA and AMD
-- Pragmatic approach – annotate parallelizable loops
-
-# How to Use a GPU: High-Level APIs – OpenACC
-
-```fortran
-!$acc parallel loop gang vector tile(16,16)
-do j=1,n
-    do i=1,n
-        B(j,i) = A(i,j)
-    enddo
-enddo
-!$acc end parallel
-```
-
-- Designed for accelerators
-- Primarily Fortran
-- NVIDIA has excellent support
-- AMD support limited
-
-# How to Use a GPU: High-Level APIs – C++
-
-| Library | Origin | CPU | NVIDIA | AMD | Intel |
-|---|---|:---:|:---:|:---:|:---:|
-| Kokkos | Sandia / LF | Yes | Yes | Yes | Yes |
-| RAJA | LLNL | Yes | Yes | Yes | Partial |
-| SYCL | Khronos standard | Yes | Yes | Yes | Yes |
-
-LF: Linux Foundation
-
-LLNL: Lawrence Livermore National Laboratory
-
-# How to Use a GPU: High-Level APIs – C++
-
-<pre class="code"><code class="language-cpp">// Kokkos
-<span style="background:#8abeb7">Kokkos::parallel_for</span>("saxpy", <span style="background:#f0c674">Kokkos::RangePolicy&lt;execution_space&gt;(0, N)</span>,
-  <span style="background:#c5c8c6">KOKKOS_LAMBDA(const size_type i) {
-    y(i) = a * x(i) + y(i);
-  }</span>);
-
-// RAJA
-<span style="background:#8abeb7">RAJA::forall</span>&lt;Exec_GPU&gt;(<span style="background:#f0c674">RAJA::RangeSegment(0,N)</span>,
-  <span style="background:#c5c8c6">[=] RAJA_DEVICE (idx_t i){
-    y[i] = a * x[i] + y[i];
-  }</span>
-);
-
-// SYCL
-<span style="background:#8abeb7">h.parallel_for</span>&lt;class saxpy&gt;(<span style="background:#f0c674">sycl::range&lt;1&gt;(N)</span>, <span style="background:#c5c8c6">[=](sycl::id&lt;1&gt; i){
-    y[i] = a * x[i] + y[i];
-}</span>);
-</code></pre>
-
-# How to Use a GPU: High-Level APIs – Python
-
-CuPy
-
-```python
-@jit.rawkernel()
-def elementwise_copy(x, y, size):
-    tid = jit.blockIdx.x * jit.blockDim.x + jit.threadIdx.x
-    ntid = jit.gridDim.x * jit.blockDim.x
-    for i in range(tid, size, ntid):
-        y[i] = x[i]
-```
-
-- NumPy-like: accelerate array operations on GPUs
-- Also possible to write GPU kernels in Python syntax
-- NVIDIA support mature, AMD support experimental
-
-# How to Use a GPU: High-Level APIs – Python
-
-Numba
-
-```python
-@cuda.jit
-def increment_by_one(an_array):
-    tx = cuda.threadIdx.x
-    ty = cuda.blockIdx.x
-    bw = cuda.blockDim.x
-    pos = tx + ty * bw
-    if pos < an_array.size:
-        an_array[pos] += 1
-```
-
-- Write GPU kernels in Python syntax
-- Good performance, lower boilerplate than CUDA
-- NVIDIA support mature, AMD support experimental
-
-# How to Use a GPU: High-Level APIs – Python
-
-PyTorch
-
-```python
-dtype = torch.float
-device = torch.device("cuda:0")
-
-x = torch.linspace(-math.pi, math.pi, 2000, device=device, dtype=dtype)
-y = torch.sin(x)
-z = x + y
-```
-
-- Versatile beyond ML (general tensor operations)
-- Ok-ish performance for general purpose computation
-- Mature support from AMD and NVIDIA
-
-# How to Use a GPU: Lower-Level APIs – CUDA & HIP
-
-CUDA (NVIDIA)
-
-```c++
-__global__ void saxpy(int n, float alpha, float *x, float *y) {
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid < n) {
-        y[tid] = alpha * x[tid] + y[tid];
-    }
-}
-```
-
-- NVIDIA GPUs only
-- C/C++/Fortran support
-- Most mature ecosystem and documentation
-
-# How to Use a GPU: Lower-Level APIs – CUDA & HIP
-
-HIP (AMD/NVIDIA)
-
-```c++
-__global__ void saxpy(int n, float alpha, float *x, float *y) {
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid < n) {
-        y[tid] = alpha * x[tid] + y[tid];
-    }
-}
-```
-
-- Heterogeneous-Compute Interface for Portability by AMD
-- Syntactically almost 1 to 1 match with CUDA
-- Makes code reuse across vendors easier
-- Uses CUDA on NVIDIA GPUs, ROCm on AMD GPUs
-
-# How to Use a GPU: Lower-Level APIs – OpenCL
-
-OpenCL
-
-```c++
-__kernel void saxpy(int n, float alpha, __global float* x, __global float* y) {
-    int i = get_global_id(0);
-    if (i < n) {
-        y[i] = alpha * x[i] + y[i];
-    }
-}
-```
-
-- Open standard maintained by Khronos Group
-- Vendor agnostic, runs on GPUs, CPUs and other devices
-- Not well supported on newer GPUs
-
-# How to Use a GPU: Lower-Level APIs – Triton
-
-Triton (Python-like)
-
-```python
-@triton.jit
-def saxpy(y_ptr, x_ptr, alpha, n, BLOCK_SIZE: tl.constexpr):
-    block_id = tl.program_id(axis=0)
-    block_start = block_id * BLOCK_SIZE
-    offsets = block_start + tl.arange(0, BLOCK_SIZE)
-    mask = offsets < n
-    x = tl.load(x_ptr + offsets, mask=mask)
-    y = tl.load(y_ptr + offsets, mask=mask)
-    y_new = alpha * x + y
-    tl.store(y_ptr + offsets, y_new, mask=mask)
-```
-
-- Python-like GPU programming language from OpenAI
-- Mostly used in AI/ML context
-- Can be use for general purpose computing
-
-
-# How (NOT) to Use a GPU: Assembly-like languages -- PTX
-
-PTX – NVIDIA Parallel Thread Execution
-
-```ptx
-{
-	ld.param.u64 	%rd1, [square(int*, int)_param_0];
-	ld.param.u32 	%r2, [square(int*, int)_param_1];
-	mov.u32 	%r3, %ntid.x;
-	mov.u32 	%r4, %ctaid.x;
-	mov.u32 	%r5, %tid.x;
-	mad.lo.s32 	%r1, %r3, %r4, %r5;
-	setp.ge.s32 	%p1, %r1, %r2;
-}
-```
-
-- Used internally by NVCC compiler
-- Don't write by hand, unless you know you need to
-
-# How (NOT) to Use a GPU: Assembly-like languages -- HSAIL
-
-HSAIL – Heterogeneous System Architecture Intermediate Language
-
-```hsail
-shl_u32 $s1, $s1, 2;
-add_u32 $s2, $s2, $s1;
-ld_global_f32 $s2, [$s2];
-add_u32 $s3, $s3, $s1;
-ld_global_f32 $s3, [$s3];
-add_f32 $s2, $s3, $s2;
-add_u32 $s0, $s0, $s1;
-st_global_f32 $s2, [$s0];
-```
-
-- AMD's compiler target representation
-- Don't write by hand, unless you know you need to
-
-# How to Use a GPU: Graphics APIs
-
-General-purpose compute via compute pipeline and compute shaders
-  \
-  \
-
-- DirectX – Windows/Xbox, C++ with HLSL shaders
-- Vulkan – Cross-platform, C/C++/Rust with GLSL/SPIR-V
-- Metal – Apple platforms, Swift/Objective-C with MSL
-
-Poor support on supercomputers (drivers missing)
-
-# How to Use a GPU: Language Support Summary
-
-| Language | NVIDIA | AMD |
-|----------|--------|-----|
-| C/C++ | Excellent | Excellent |
-| Fortran | Good | Limited |
-| Python | Good | Limited |
-| Other | Varies | Varies |
-
-# How to Use a GPU: Practical Language Guidance
-
-Choose based on your needs:
-
-- C/C++
-    - Maximum portability and vendor support
-- Python
-    - Rapid development, strong ML frameworks
-    - Numba & CuPy experimental support on AMD
-- Fortran
-    - Legacy and scientific codes
-    - NVIDIA support better
-- Other languages
-    - Possible but support usually lacking on HPC systems
+1. GPU accelerated programs (GROMACS, LAMMPS)
+2. Parallel programming libraries (Thrust, rocBLAS)
+3. High-level APIs (**OpenMP offloading**, OpenACC, SYCL, Numba, PyTorch)
+4. Low-level APIs (**CUDA**, **HIP**, OpenCL, Triton)
+5. Graphich APIs (DirectX, Vulkan, Metal)
+6. Assembly-like intermediate representations (PTX, HSAIL)
 
 # Problems That Map Well to GPUs {.section}
 
@@ -877,7 +608,7 @@ Ask yourself
 
 # How to approach using GPUs?
 
-1. Is software available? (GROMACS, LAMMPS, Elmer)
+1. Is software available? (GROMACS, LAMMPS)
 2. Can I use generic libraries? (Thrust, rocBLAS)
 4. Do I need portability, ease of development, efficiency, feature support?
 5. Lower level API with maximum control or a higher level abstraction?
@@ -890,213 +621,9 @@ Ask yourself
 - Think about your needs when choosing the abstraction level:
   - High-level libraries (more assumptions, less control)
   - Low-level APIs (more explicit, maximum control)
-- C/C++ best supported across NVIDIA and AMD
 - Many problems map well to the parallel nature of GPUs, but not all
 
 # Questions?
-
-# Bonus: Software -- Hardware mapping {.section}
-
-# Refresh: GPU architecture
-
-:::::: {.columns}
-::: {.column width="70%"}
-![](img/mi250x-layout.png){.center width=100%}
-:::
-::: {.column width="30%"}
-Or more abstractly
-
-![](img/gcd-ce-cu-abstract.png){.center width=100%}
-:::
-::::::
-
-# GPU threads
-
-GPU code is usually written from the perspective of a single GPU thread
-
-Notice the lack of any for loops
-
-```c++
-__global__ void saxpy(int n, float alpha, float *x, float *y) {
-    // What is my global thread ID?
-    const int tid = blockIdx.x * blockDim.x + threadIdx.x;
-
-    // Is my thread ID smaller than the length of the array?
-    if (tid < n) {
-        // Perform the operation, for this single ID
-        y[tid] = alpha * x[tid] + y[tid];
-    }
-}
-```
-
-# GPU threads
-
-GPU threads are very different from CPU threads
-  \
-  \
-
-- very lightweight
-- spawned automatically
-- grouped hiearchically
-- mapped to hardware differently
-
-# Grid, block, wavefront, thread hierarchy
-
-![](img/grid-block-wavefront-thread-tree.png){.center width=70%}
-
-# GPU thread -- SIMD lane
-
-A single GPU thread maps to a single lane on a SIMD unit
-
-\  
-\  
-
-![](img/thread_lane.png){.center width=50%}
-
-# Wavefront/warp -- SIMD unit
-
-:::::: {.columns}
-::: {.column width="50%"}
-Consecutive GPU threads grouped by hardware:
-
-|#|Name|Vendor|HW|
-|-|----|------|--|
-|64|wavefront|AMD|SIMD|
-|32|warp|NVIDA|SMSP|
-:::
-::: {.column width="50%"}
-![](img/wavefront-simd.png){.center width=100%}
-:::
-::::::
-
-SMSP: Streaming Multiprocessor Sub-Partition (~= SIMD)
-
-Wavefronts/warps recide on the same SIMD/SMSP until completion
-
-# Wavefront
-
-1. Wavefronts map to a SIMD unit
-2. SIMD units perform the same operation for all lanes
-3. Sub-wavefront divergence reduces throughput
-
-:::::: {.columns}
-::: {.column width="50%"}
-```cpp
-// avoid
-if ((tid % 64) < 32)
-    divergence_within_a_wavefront();
-else
-    reduces_throughput();
-```
-:::
-::: {.column width="50%"}
-```cpp
-// ok
-if ((tid / 64) < N)
-    no_divergence_since();
-else
-    threads_in_wavefront_take_same_branch();
-```
-:::
-::::::
-
-# Block of threads -- CU/SM
-
-:::::: {.columns}
-::: {.column width="60%"}
-GPU threads grouped also in software by the user
-
-**Block of threads** = N threads, where (1 <= N <= 1024)
-
-Block maps to CU/SM (AMD/NVIDIA)
-
-Blocks may be 1, 2 or 3 dimensional
-
-CU: Compute Unit
-
-SM: Streaming Multiprocessor
-
-:::
-::: {.column width="40%"}
-![](img/block-cu.png){.center width=60%}
-:::
-::::::
-
-# Block of threads -- CU/SM
-
-:::::: {.columns}
-::: {.column width="50%"}
-Multiple blocks may map to a single CU/SM
-  \
-  \
-  \
-  \
-  \
-  \
-A single block is never mapped to multiple CU/SMs
-:::
-::: {.column width="50%"}
-![](img/multi-block-per-cu.png){.center width=100%}
-:::
-::::::
-
-# Block of threads and shared memory
-
-1. Block of threads maps to a CU/SM
-2. The SIMDs/SMSPs on CU/SM share a small amount of fast memory
-3. Threads within the same block may cooperate through that memory
-
-![](img/mi250x-cu-lds-highlight.png){.center width=100%}
-
-# Grid of blocks -- GPU
-
-:::::: {.columns}
-::: {.column width="50%"}
-User also defines the number of blocks
-
-**Grid of blocks** = N blocks, where (1 <= N <= M) and M depends on e.g. hardware, but is >= 65535
-
-A grid maps to a single GPU
-
-Grids may be 1, 2 or 3 dimensional
-
-:::
-::: {.column width="50%"}
-![](img/grid-gcd.png){.center width=50%}
-:::
-::::::
-
-# Mapping summary
-
-|#|Name|HW|User|Dim|Notes|
-|-|----|--|----|---|-----|
-|1|thread|lane|no|1||
-|64|wavefront|SIMD|no|1|AMD (cf. warp)|
-|32|warp|SMSP|no|1|NVIDIA (cf. wavefront)|
-|N|block of threads|CU/SM|yes|1-3|1 <= N <= 1024|
-|N|grid of blocks|GPU|yes|1-3|1 <= N <= M, M varies|
-
-# Defining grids and blocks, launching work
-
-```c++
-__global__ void saxpy(int n, float alpha, float *x, float *y) {
-    //              [0, 4095]    1024         [0, 1023]
-    const int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    // We use the block ID--/            /         \-- the local thread ID
-    //              and the block size--/
-    // To compute the global thread ID
-    if (tid < n) {
-        y[tid] = alpha * x[tid] + y[tid];
-    }
-}
-
-int main(int argc, char **argv) {
-    // Allocation, initialization etc. not shown
-    const dim3 block_of_threads(1024, 1, 1); // 32 warps, 16 wavefronts
-    const dim3 grid_of_blocks(4096, 1, 1);
-    saxpy<<<grid_of_blocks, block_of_threads>>>(n, alpha, x, y);
-}
-```
 
 # The End
 

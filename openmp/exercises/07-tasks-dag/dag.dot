@@ -1,0 +1,14 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
+digraph {
+  A -> B;
+  A -> C;
+  A -> D;
+  B -> E;
+  C -> F;
+  D -> F;
+  E -> G;
+  F -> G;
+}

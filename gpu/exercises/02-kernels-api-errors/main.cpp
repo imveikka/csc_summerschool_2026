@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #include <hip/hip_runtime.h>
 
 #define HIP_ERRCHK(result) hip_errchk(result, __FILE__, __LINE__)

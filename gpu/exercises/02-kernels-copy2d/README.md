@@ -1,6 +1,18 @@
-# Kernel: copy2d
+<!--
+SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
 
-Write a device kernel that performs the double precision BLAS operation
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
+# [Bonus exercise] Kernel: copy2d
+
+If you've reached this far, congratulations! You've learned the very basics of launching kernels
+on the GPU, calling the HIP API and finding out about and fixing errors related to the kernels & API.
+You also learned something about re-using threads.
+
+This is a bonus exercise about 2D for loops in kernels.
+
+Your job is to write a device kernel that performs the double precision BLAS operation
 **dcopy**, i.e. `y = x` using GPU threads in a 2D grid.
 
 - Assume that the vectors `x` and `y` are used to store a 400x600 matrix (in row-major format)

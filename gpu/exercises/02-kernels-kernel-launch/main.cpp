@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #include <hip/hip_runtime.h>
 
 __global__ void hello(int32_t num_blocks, int32_t num_threads) {
