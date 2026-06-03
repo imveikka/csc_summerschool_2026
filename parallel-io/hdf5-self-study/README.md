@@ -64,7 +64,7 @@ C-style API, but has the following differences:
 (including the error code), then optional input parameters.
 - Due to different array indexing conventions between C and Fortran, some examples in these notes may require that you
 interchange array rows and columns if converting the examples to Fortran. Internally, HDF5 uses C-style conventions for
-multidimensional array storage, ie. last dimension is the fastest-changing dimension. More details are available in the
+multidimensional array storage, i.e. last dimension is the fastest-changing dimension. More details are available in the
 [docs](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_s__u_g.html).
 
 **Please note that we currently do not have HDF5 exercises for the Fortran API.**
@@ -122,13 +122,13 @@ The pipeline for creating a fresh HDF5 file and writing a dataset proceeds rough
 1. Create the file using [`H5Fcreate()`](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/RM_H5F.html#File-Create),
 with appropriate creation flags and configuration options (e.g. access permissions).
 2. Create a [**dataspace**](https://support.hdfgroup.org/documentation/hdf5/latest/group___h5_s.html#ga8e35eea5738b4805856eac7d595254ae)
-to represent shape of the data. Usually we are interested in writing N-dimensional arrays; dataspaces corresponding to
+to represent the shape of the data. Usually we are interested in writing N-dimensional arrays; dataspaces corresponding to
 these are called "simple" in HDF5. A simple dataspace can be created with [`H5Screate_simple()`](https://support.hdfgroup.org/documentation/hdf5/latest/group___h5_s.html#ga8e35eea5738b4805856eac7d595254ae).
 3. Create a [**dataset**](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_d__u_g.html) by calling
 [`H5Dcreate()`](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/RM_H5D.html#Dataset-Create). In this function call
-we specify which file this dataset is to be created in, type of data that we are storing (e.g. integers of floats), and a
+we specify which file this dataset is to be created in, the type of data that we are storing (e.g. integers of floats), and a
 valid dataspace for defining dataspace shape.
-4. Call [`H5Dwrite()`](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/RM_H5D.html#Dataset-Write) to write data to
+4. Call [`H5Dwrite()`](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/RM_H5D.html#Dataset-Write) to write data 
 into the file.
 
 The last step, `H5Dwrite()`, is a rather complex operation.
@@ -140,11 +140,11 @@ The inputs required for writing are:
 - The dataset's datatype in memory.
 - The memory layout of the source data buffer that we wish to write (**memory space** or **memspace**).
 This is specified using a dataspace object.
-- Destination data layout, ie. how the data is aligned *within* the file's dataset (**file space** argument).
+- Destination data layout, i.e. how the data is aligned *within* the file's dataset (**file space** argument).
 This is again specifed using a dataspace.
 - The dataset transfer property list. This can be used to configure various aspects of the I/O operation, e.g. make the
 write a collective operation (more on this later). Can pass `H5P_DEFAULT` to use default transfer properties.
-- The source data buffer, ie. what data to write.
+- The source data buffer, i.e. what data to write.
 
 The memspace and file space arguments are useful for doing partial I/O operations on a dataset, e.g. write or read only
 a small part of a large dataset. HDF5 provides a special keyword `H5S_ALL`, which when passed as *both* the memspace and
@@ -165,7 +165,7 @@ int myMatrix[4][5];
 // HDF5 object creation routines return integer IDs (handles) to the created objects
 hid_t fileId = H5Fcreate(
     "my_matrix.h5", // file name
-    H5F_ACC_TRUNC,  // "truncate mode", ie. overwrite existing file. Read-write access is always implied
+    H5F_ACC_TRUNC,  // "truncate mode", i.e. overwrite existing file. Read-write access is always implied
     H5P_DEFAULT,    // Default file creation options
     H5P_DEFAULT     // Default file access options (we explore this more when discussing parallel I/O)
 );
@@ -184,7 +184,7 @@ hid_t datasetId = H5Dcreate(
     fileId,           // Which file this dataset will reside in
     "VeryCoolMatrix", // Name of the dataset
     H5T_NATIVE_INT,   // Specify that the data consists of 'int' types
-    dataspaceId,      // Dataspace to use for this dataset, ie. data shape.
+    dataspaceId,      // Dataspace to use for this dataset, i.e. data shape.
     H5P_DEFAULT,      // Default link creation options. Advanced feature: "links" in HDF5 behave like symlinks in UNIX
     H5P_DEFAULT,      // Default creation options
     H5P_DEFAULT       // Default access options
@@ -313,7 +313,7 @@ Part 2 of [`hdf5-write-dataset`](hdf5-write-dataset).
 ## Partial dataset I/O
 
 So far we have used the `H5S_ALL` keyword for the data layout arguments in `H5Dwrite()` and `H5Dread()`. This keyword
-instructs HDF5 to write or read the entire dataset. We next consider partial dataset operations, ie. reading or writing
+instructs HDF5 to write or read the entire dataset. We next consider partial dataset operations, i.e. reading or writing
 subsets of a large dataset.
 
 ### Hyperslab selections
@@ -328,13 +328,13 @@ Block size of `(1, 1)` would mean we'd just select individual elements (default 
 or more) from a dataspace using [H5Sselect_hyperslab()](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/RM_H5S.html#Dataspace-SelectHyperslab).
 It takes in the following arguments:
 - Dataspace ID
-- A "selection operation code", ie. what kind of selection are we performing. For example, `H5S_SELECT_SET` will replace
+- A "selection operation code", i.e. what kind of selection are we performing. For example, `H5S_SELECT_SET` will replace
 any existing selection with the new selection, `H5S_SELECT_OR` will add any new hyperslabs to an existing selection,
 and so on.
 - The following four `hsize_t` arrays, each containing $N$ elements if the dataspace is $N$-dimensional:
     - Starting offset: How many elements to skip in each direction before starting selection.
     - Stride: Specifies how the dataspace is traversed when selecting elements. `stride[i]` is the number of elements to
-    move in direction `i`, ie. elements to be selected are `offset[i]`, `offset[i] + stride[i]`, `offset[i] + 2*stride[i]`
+    move in direction `i`, i.e. elements to be selected are `offset[i]`, `offset[i] + stride[i]`, `offset[i] + 2*stride[i]`
     etc. Passing `NULL` stride defaults to 1 in all directions, meaning a contiguous selection.
     - Block count: How many blocks to select in each direction.
     - Block size: How many elements to include in one block, as discussed above. `NULL` means 1 in each direction
@@ -367,7 +367,7 @@ hid_t dataset = H5Dcreate(fileId, "SomeDataset", H5T_NATIVE_DOUBLE, dataspace, H
 // Data to be written
 double data[4] = { 1.0, 2.0, 3.0, 4.0 };
 
-// Define memory space (memspace) for writing, ie. shape of the source data. Just 1D array of length 4 in this case
+// Define memory space (memspace) for writing, i.e. shape of the source data. Just 1D array of length 4 in this case
 hsize_t memspaceDims[1] = { 4 };
 hid_t memspace = H5Screate_simple(1, memspaceDims, NULL);
 
@@ -379,7 +379,7 @@ hsize_t block[2] = { 1, 2 };
 
 herr_t status = H5Sselect_hyperslab(
     dataspace,          // Dataspace to operate on
-    H5S_SELECT_SET,     // New selection, ie. discard any previously selected dataspace elements
+    H5S_SELECT_SET,     // New selection, i.e. discard any previously selected dataspace elements
     offset,
     stride,
     count,
