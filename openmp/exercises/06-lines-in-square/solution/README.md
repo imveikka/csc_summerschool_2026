@@ -26,7 +26,10 @@ SPDX-License-Identifier: CC-BY-4.0
        Calculation took 232.494 milliseconds
 
 
-2. See `lines-wrong.cpp`. Possible output with four threads:
+2. **C++**
+
+   See `lines-wrong.cpp` for a first attempt.
+   Possible output with four threads:
 
        Samples: 10000000
        Seed: 0
@@ -40,10 +43,7 @@ SPDX-License-Identifier: CC-BY-4.0
    We see that there is an issue with the random number sampling
    as multiple threads are getting the same random values.
 
-   Note: Fortran's `random_number` shares a global state,
-   so the C++ race condition does not occur.
-
-3. See `lines-working.{cpp,F90}`. Output with four threads:
+   For a working solution, see `lines.cpp`. Output:
 
        Samples: 10000000
        Seed: 0 + thread number
@@ -58,12 +58,27 @@ SPDX-License-Identifier: CC-BY-4.0
    seed for each thread in order to create a different series
    of random numbers in each thread.
 
-   Note, however, that this causes that the results depend on
-   the number of threads. This is not a problem for solving
-   the average distance between the points, which requires
-   using large enough number of samples to converge the results.
-   However, in some scenarios identical results might be desired,
-   but implementing such will cost in terms of performance.
+   **Note:** While this resolves the immediate issue of identical sequences,
+   it is not a perfect solution. Using only slightly different seeds
+   may still lead to subtle correlations between the generated sequences,
+   depending on the random number generator. For demanding applications
+   this could impact the statistical quality of the result.
+   In such cases, more robust parallel random number generation techniques
+   should be used.
 
-   Note: Fortran's `random_number` behaves like that,
-   and the provided code is very slow.
+   **Note:** This approach makes the final result depend on
+   the number of threads. If reproducibility is required
+   (e.g. identical results regardless of thread count),
+   additional care is needed, typically at the cost of increased
+   implementation complexity or reduced performance.
+
+   **Fortran**
+
+   See `lines.F90`.
+
+   **Note:** Fortran's `random_number` shares a global state in a thread-safe way,
+   so the C++ race condition does not occur.
+
+   However, this also means that the random number generation becomes
+   a serialization point and significantly limits parallel performance.
+   To achieve good performance, proper parallel number generation should be used.
