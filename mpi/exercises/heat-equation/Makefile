@@ -91,6 +91,15 @@ _LINKER  = $(CXX)
 _LFLAGS  = $(CCFLAGS)
 endif
 
+ifeq ($(_SRCS),)
+$(error No source files found in '$(SRCDIR)'! Check that TARGET is correct)
+endif
+
+ifeq ($(_LANG),fortran)
+# Fortran has complicated module dependencies, read them from external file
+include fortran/Makefile.deps
+endif
+
 EXE = heat_mpi
 EXE_FULL = $(BUILDDIR)/$(EXE)
 DEPS = $(OBJS:.o=.d)
