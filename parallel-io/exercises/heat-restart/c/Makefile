@@ -4,7 +4,7 @@
 
 # Build the heat-restart equation exercise or its model solution.
 # Usage:
-#   make                                  # build the exercise code
+#   make                                    # build the exercise code
 #   make SOLUTION=solution                  # build C model solution
 
 .DEFAULT_GOAL := all
