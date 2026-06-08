@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # General instructions for Mahti
 
-## Accessing Mahti
+## Logging in via ssh
 
 You can access the [Mahti](https://docs.csc.fi/computing/systems-mahti/) supercomputer with ssh:
 
@@ -18,7 +18,7 @@ If you don't have the ssh key in the default location, you need to give a path t
 
 See [wiki](../../wiki/Setting-up-CSC-account-and-SSH) for further details.
 
-## First-time setup on Mahti
+## First-time setup
 
 All the exercises should be carried out in the scratch disk area.
 This scratch area is shared between all the project members, so create a personal working directory there:
@@ -32,6 +32,11 @@ and clone the summer school git repository there:
 
 Now, `/scratch/project_2019219/$USER/summerschool` is your own clone of the summer school repository on Mahti
 and you can modify files there without causing conflicts with other summer school participants.
+
+After this initial setup, the files remain on the system and in the subsequent terminal sessions you can go
+directly to your summershool clone:
+
+    cd /scratch/project_2019219/$USER/summerschool
 
 <details>
 <summary>Optional: Working with your own git fork</summary>
