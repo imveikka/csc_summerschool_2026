@@ -14,16 +14,17 @@ at that point and its neighbor points ("stencil").
 See [Code description](code-description.md) for some theory and details about
 the code.
 
-To parallelize the code, one needs to divide the grid into blocks of columns
-(in Fortran) or rows (in C/C++) and assign each block to one MPI task. Or in other
-words, share the work among the MPI tasks by doing a domain decomposition.
+To parallelize the code, one needs to divide the grid into blocks of rows
+(in C/C++) or columns (in Fortran) and assign each block to one MPI task. In
+other words, the program should share the work among the MPI tasks by doing a
+domain decomposition.
 
 The MPI tasks are able to update the grid independently everywhere else than
-on the boundaries -- there the communication of a single column (or row) with
-the nearest neighbour is needed. This can be achieved by having additional
-ghost-layers that contain the boundary data of the neighbouring tasks. As the
-system is aperiodic, the outermost ranks communicate with only one neighbour,
-and the inner ranks with two neighbours.
+on the boundaries -- there the communication of a single row (C/C++) or column
+(Fortran) with the nearest neighbour is needed. This can be achieved by having additional
+ghost-layers that contain the boundary data of the neighbouring tasks. We
+assume the system to be non-periodic, so the outermost ranks communicate with
+only one neighbour and the inner ranks with two neighbours.
 
 ![domain decomposition C](img/domain-decomposition-c.svg)
 
@@ -42,8 +43,9 @@ and the inner ranks with two neighbours.
 
 ### First steps
 
-Some parts of the code are already parallelized (*e.g.* input/output), complete
-the parallelization as follows (marked with TODOs in the source code):
+Some parts of the code already work with MPI parallelization (*e.g.* input/output).
+Your task is to complete the parallelization following the TODO comments in
+the source code:
 
 1. Initialize and finalize MPI in the main routine
    - in [cpp/main.cpp](cpp/main.cpp) or
@@ -58,10 +60,14 @@ the parallelization as follows (marked with TODOs in the source code):
 There is a working serial code under [cpp/serial](cpp/serial) / [fortran/serial](fortran/serial)
 which you can use as a reference.
 
-To build the code, please use the provided `Makefile`. The same `Makefile` can also build our
-model solutions using the optional `SOLUTION` variable.
+To build the code, please use the provided `Makefile`.
 Use the `PLATFORM` variable if building on systems other than LUMI.
 `make PLATFORM=generic` should work on any Unix-like system.
+
+The same `Makefile` can also build our model solutions using the optional
+`SOLUTION` variable. Examples:
+- Under the [`cpp`](cpp/) or [`Fortran`](fortran/) directories: `make SOLUTION=solution-send-recv`
+- Under the [`c`](c/) directory: `make SOLUTION=solution`
 
 ### Using sendrecv
 
