@@ -7,17 +7,23 @@
 # Script for rsyncing projects from local to a remote HPC system,
 # so that folder structure is preserved relative to a configurable "root" directory
 
-if [[ "$1" != "lumi" && "$1" != "mahti" ]]; then
-    echo "Usage: $0 [lumi|mahti]"
+# --- Replace with your username ---
+REMOTE_USER=""
+
+if [ ! -n "$REMOTE_USER" ]; then
+    echo "ERROR: Edit the script and set REMOTE_USER as your csc username."
     exit 1
 fi
-TARGET_REMOTE="$1"
 
-# --- Replace with your username ---
-USER="laurinie"
+# Target remote is last argument. Earlier arguments are passed to rsync later.
+TARGET_REMOTE="${@: -1}"
+if [[ "$TARGET_REMOTE" != "lumi" && "$TARGET_REMOTE" != "mahti" ]]; then
+    echo "Usage: $0 <additional rsync options> [lumi|mahti]"
+    exit 1
+fi
 
-# --- Local project root ---
-LOCAL_ROOT="/home/$USER/training"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_ROOT=${SCRIPT_DIR}/../..
 
 # --- Directories to sync (relative to LOCAL_ROOT). Will include subdirectories ---
 SYNC_DIRS=(
@@ -26,14 +32,12 @@ SYNC_DIRS=(
 
 # --- Remote config ---
 if [[ "$TARGET_REMOTE" == "lumi" ]]; then
-    REMOTE_HOST="lumi"
+    REMOTE_HOST="$REMOTE_USER@lumi.csc.fi"
     REMOTE_ROOT="/scratch/project_462001452/$USER/rsync"
 elif [[ "$TARGET_REMOTE" == "mahti" ]]; then
-    REMOTE_HOST="mahti"
-    REMOTE_ROOT="/scratch/project_2019219/$USER/gpaw_rsync"
+    REMOTE_HOST="$REMOTE_USER@mahti.csc.fi"
+    REMOTE_ROOT="/scratch/project_2019219/$USER/rsync"
 fi
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Rsync common options:
 # -a : Archive mode (preserves permissions, symlinks, etc.)
@@ -47,10 +51,19 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Some more flags that you may find useful; add as necessary.
 # -P : Show progress for each file
 # --delete : Remove remote files that are not present locally
-RSYNC_OPTS=(-avz --mkpath
+RSYNC_OPTS=(-avz
     --exclude-from=".gitignore"
     --exclude-from="$SCRIPT_DIR/.rsyncignore"
 )
+# Rsync version on Mahti is too old and does not support --mkpath. Parent directories must be created manually.
+if [[ "$TARGET_REMOTE" == "lumi" ]]; then
+    RSYNC_OPTS+=(--mkpath)
+fi
+
+# Append additional rsync flags, if any
+length=$(($#-1))
+EXTRA_OPTS=${@:1:$length}
+RSYNC_OPTS+=($EXTRA_OPTS)
 
 # --- Sync each subdirectory ---
 for SUBDIR in "${SYNC_DIRS[@]}"; do
@@ -62,7 +75,13 @@ for SUBDIR in "${SYNC_DIRS[@]}"; do
 
     rsync "${RSYNC_OPTS[@]}" "$LOCAL_PATH" "$REMOTE_PATH"
 
-    if [[ $? -ne 0 ]]; then
+    # Catch io error when parent directory doesn't exist on mahti and print a more descriptive error message.
+    RSYNC_EXCODE="$?"
+    if [[ $RSYNC_EXCODE -eq 11 ]] && [[ "$TARGET_REMOTE" == "mahti" ]] && [[ "$SUBDIR" == "summerschool" ]]; then
+        echo -e "\nERROR: Rsync on Mahti is too old to automatically create parent directories. \n  Create $REMOTE_ROOT/$SUBDIR manually and try again."
+        exit 1
+    fi
+    if [[ $RSYNC_EXCODE -ne 0 ]]; then
         echo "ERROR: rsync failed for $SUBDIR" >&2
         exit 1
     fi
