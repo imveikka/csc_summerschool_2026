@@ -67,6 +67,32 @@ the previous step at the same location *and* four adjacent locations:
 We say that these five grid points form a **stencil** for the time evolution
 at point $(i, j)$.
 
+
+both the "current" and "previous" values of the $u(i, j)$ field, such that
+the the
+
+We can iterate the time evolution in code by storing two copies of the
+temperature field $u(i, j)$: one for holding the updated values at the timestep
+that we are currently computing, and one for holding the field values at the
+previous timestep.
+In pseudocode, the main simulation loop before parallelization looks roughly
+as follows.
+```python
+main():
+  initialize_field()         # Boundary conditions and initial temperature profile on the 2D grid
+  write_field()              # Export the temperature field to an external file (.png) for visualization
+
+  for time in time_steps:
+    evolve_field()           # Solve temperature field at this timestep based on its values at the previous step
+    if write_this_time_step:
+      write_field()          # Export again to external file, but do this only at specified intervals
+    swap_fields()            # Swap field variables in preparation for the next iteration: "new" field becomes the "previous" field
+
+  # Final export and cleanup
+  write_field()
+  finalize_field()
+```
+
 ### Parallelization
 
 The problem can be parallelized by diving the two dimensional
