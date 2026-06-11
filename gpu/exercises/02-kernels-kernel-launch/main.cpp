@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: MIT
 
 #include <hip/hip_runtime.h>
+#include <assert.h>
+#include <stdio.h>
 
 __global__ void hello(int32_t num_blocks, int32_t num_threads) {
     assert(num_blocks != 10);

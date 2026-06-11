@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <hip/hip_runtime.h>
+#include <stdio.h>
 #include <iostream>
 #include <vector>
 #include <iomanip>
