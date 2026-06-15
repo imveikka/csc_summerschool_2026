@@ -157,6 +157,12 @@ See [HPE Cray Clang C and C++ Quick Reference (17.0.1)](https://support.hpe.com/
 and [ftn man pages](https://cpe.ext.hpe.com/docs/24.03/cce/man1/crayftn.1.html)
 for further information.
 
+Alternatively to Cray compilers above, the C and C++ codes can also be compiled with AMD Clang:
+```bash
+amdclang -fopenmp -O3 --offload-arch=gfx90a test.c -o test.x
+amdclang++ -fopenmp -O3 --offload-arch=gfx90a test.cpp -o test.x
+```
+
 
 ## Running
 
