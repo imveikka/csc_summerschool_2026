@@ -26,6 +26,7 @@ We will cover the following topics
 After this lecture you will understand
   \
   \
+  
 - GPU terminology (e.g. what is a thread, a kernel,...)
 - Clarifying GPU programming model 
 
