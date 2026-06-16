@@ -24,7 +24,7 @@ SPDX-License-Identifier: CC-BY-4.0
 - [Basics of streams](04-streams-basics)
 - [Asynchronous kernels](04-streams-asynckernel)
 - [Asynchronous memory copy](04-streams-asyncmemcopy)
-- [Synchronizing with events](04-streams-eventssync)
+- [Timing GPU execution with events](04-streams-timings)
 - [Bonus: Overlapping CPU and GPU execution](04-bonus-cpu-gpu-overlap)
 
 ### Memory management
