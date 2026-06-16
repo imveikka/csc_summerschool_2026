@@ -33,7 +33,7 @@ lang:   en
 
 - MPI is a standard, first version (1.0) published in 1994, latest (5.0) in 2025
   - <https://www.mpi-forum.org/docs/>
-- There are different implementations of MPI standard
+- There are different implementations of the MPI standard
   - [OpenMPI](http://www.open-mpi.org/)
   - [MPICH](https://www.mpich.org/)
   - [Intel MPI](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/mpi-library.html)
@@ -227,7 +227,7 @@ MPI_Function(`input_arg`{.input}, `output_arg`{.output})
 
 MPI_Init(...)
   : Initializes the MPI execution environment
-  : Note! C interface includes command line arguments
+  : Note! The C interface includes command line arguments
 
 MPI_Finalize()
   : Terminates the MPI execution environment
@@ -281,7 +281,7 @@ ftn -o my_mpi_prog my_mpi_code.F90
 - A special communicator `MPI_COMM_WORLD` contains all the processes
 - A process can belong to multiple communicators
   - Custom communicators can be defined
-- Communication happens always within a specific communicator
+- Communication always happens within a specific communicator
 
 
 # Information about the MPI communicator

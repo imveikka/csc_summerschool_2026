@@ -49,7 +49,7 @@ lang:   en
     - An identification number for the message (*tag*)
     - Used *communicator*
 - Sends and receives in a program should match – one receive per send
-    - matching is based on source, destination and tags
+    - Matching is based on source, destination and tags
 
 # MPI point-to-point operations
 
@@ -258,6 +258,6 @@ MPI_Recv(`buffer`{.output}, `count`{.input}, `datatype`{.input}, `source`{.input
 - Point-to-point communication = messages are sent between two MPI processes
 - Point-to-point operations enable any parallel communication pattern
   - `MPI_Send` and `MPI_Recv` would be (in principle) enough
-- Sends and receives need to match
+- Sends and receives must match
 - `MPI_Send` and `MPI_Recv` are blocking routines
   - Beware of deadlocks
