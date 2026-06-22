@@ -99,7 +99,7 @@ The slides are available in
 | 12:00 | Lunch
 | 13:00 | Exercises (optional)
 | 15:00 | Refreshments available as usual
-| 15:30 | Free time
+| 15:30 | Free time / Visit to beehives
 | 18:00 | Dinner (available until 20:00)
 | 19:00 | Free time
 | 20:00 | Relax
