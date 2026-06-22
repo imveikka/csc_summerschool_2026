@@ -60,7 +60,7 @@ to the file `$HOME/.bashrc`.
 
 For editing program source files you can use e.g. the *nano* editor:
 
-    nano test.F90
+    nano prog.F90
 
 (`^` in nano's shortcuts refer to **Ctrl** key, *i.e.* in order to save the file and exit the editor press `Ctrl+X`)
 Also other popular editors such as *emacs* and *vim* are available.
@@ -86,9 +86,9 @@ module load gcc/11.2.0 openmpi/4.1.2
 
 Compilation of MPI programs in C, C++, and Fortran:
 ```bash
-mpicc -O3 -Wall test.c -o test.x
-mpicxx -O3 -Wall test.cpp -o test.x
-mpif90 -O3 test.F90 -o test.x
+mpicc -O3 -Wall prog.c -o prog.x
+mpicxx -O3 -Wall prog.cpp -o prog.x
+mpif90 -O3 prog.F90 -o prog.x
 ```
 
 The wrapper commands include automatically all the flags needed for building MPI programs.
@@ -98,9 +98,9 @@ The wrapper commands include automatically all the flags needed for building MPI
 Both pure OpenMP and hybrid MPI+OpenMP programs can be compiled with the same wrappers
 by including `-fopenmp` flag:
 ```bash
-mpicc -fopenmp -O3 -Wall test.c -o test.x
-mpicxx -fopenmp -O3 -Wall test.cpp -o test.x
-mpif90 -fopenmp -O3 test.F90 -o test.x
+mpicc -fopenmp -O3 -Wall prog.c -o prog.x
+mpicxx -fopenmp -O3 -Wall prog.cpp -o prog.x
+mpif90 -fopenmp -O3 prog.F90 -o prog.x
 ```
 
 #### HDF5
@@ -113,8 +113,8 @@ module load hdf5/1.10.7-mpi
 
 When building programs, `-lhdf5` (C/C++) or `-lhdf5_fortran` (Fortran) needs to be added to linker flags, e.g.
 ```bash
-mpicxx -O3 -Wall test.cpp -lhdf5 -o test.x
-mpif90 -O3 test.F90 -lhdf5_fortran -o test.x
+mpicxx -O3 -Wall prog.cpp -lhdf5 -o prog.x
+mpif90 -O3 prog.F90 -lhdf5_fortran -o prog.x
 ```
 
 
@@ -132,7 +132,7 @@ module load gcc/11.2.0 openmpi/4.1.2-cuda cuda/11.5.0
 
 Compilation of CUDA programs:
 ```bash
-nvcc -O3 -gencode arch=compute_80,code=sm_80 test.cu -o test.x
+nvcc -O3 -gencode arch=compute_80,code=sm_80 prog.cu -o prog.x
 ```
 
 Compilation of MPI+CUDA programs is a bit more complex as we need to include the MPI flags.
@@ -145,7 +145,7 @@ Xcompiler="-Xcompiler $(mpicxx --showme | tr ' ' '\n' | sed '/^-Wl,/d;1d' | past
 Xlinker="-Xlinker $(mpicxx --showme | tr ' ' '\n' | sed -n 's/^-Wl,//p' | paste -sd, -)"
 
 # Compile MPI code using nvcc
-nvcc -O3 -gencode arch=compute_80,code=sm_80 $Xcompiler $Xlinker test.cu -o test.x
+nvcc -O3 -gencode arch=compute_80,code=sm_80 $Xcompiler $Xlinker prog.cu -o prog.x
 ```
 
 ### OpenMP offload and MPI+OpenMP offload
@@ -163,16 +163,23 @@ see [CSC documentation](https://docs.csc.fi/computing/compiling-mahti/#openacc-a
 
 Compilation of OpenMP offload programs:
 ```bash
-nvc -mp=gpu -O3 -gpu=cc80 test.c -o test.x
-nvc++ -mp=gpu -O3 -gpu=cc80 test.cpp -o test.x
-nvfortran -mp=gpu -O3 -gpu=cc80 test.F90 -o test.x
+nvc -mp=gpu -O3 -gpu=cc80 prog.c -o prog.x
+nvc++ -mp=gpu -O3 -gpu=cc80 prog.cpp -o prog.x
+nvfortran -mp=gpu -O3 -gpu=cc80 prog.F90 -o prog.x
+```
+
+To obtain compiler diagnostics:
+```bash
+nvc -mp=gpu -O3 -gpu=cc80 -Minfo=mp prog.c -o prog.x
+nvc++ -mp=gpu -O3 -gpu=cc80 -Minfo=mp prog.cpp -o prog.x
+nvfortran -mp=gpu -O3 -gpu=cc80 -Minfo=mp prog.F90 -o prog.x
 ```
 
 Compilation of MPI + OpenMP offload programs works with the usual wrappers in this environment:
 ```bash
-mpicc -mp=gpu -O3 -gpu=cc80 test.c -o test.x
-mpicxx -mp=gpu -O3 -gpu=cc80 test.cpp -o test.x
-mpif90 -mp=gpu -O3 -gpu=cc80 test.F90 -o test.x
+mpicc -mp=gpu -O3 -gpu=cc80 prog.c -o prog.x
+mpicxx -mp=gpu -O3 -gpu=cc80 prog.cpp -o prog.x
+mpif90 -mp=gpu -O3 -gpu=cc80 prog.F90 -o prog.x
 ```
 
 
@@ -201,7 +208,7 @@ See LUMI for available reservations.
 
 ### CPU jobs
 
-Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per node, and 2 CPU core per task, i.e., 8 CPU cores within one node in total:
+Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per node, and 2 CPU core per task, as well as 1 GB RAM per core, i.e., 8 CPU cores and 8 GB RAM within one node in total:
 
 ```bash
 #!/bin/bash
@@ -211,6 +218,7 @@ Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per no
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=2
+#SBATCH --mem-per-cpu=1G
 #SBATCH --time=00:05:00
 
 # Set the number of threads based on cpus-per-task
@@ -245,7 +253,7 @@ Example `job.sh` for running a GPU program reserving 1 NVIDIA A100 GPU:
 #SBATCH --partition=gpusmall
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:a100:1
 #SBATCH --time=00:05:00
 
@@ -253,7 +261,7 @@ Example `job.sh` for running a GPU program reserving 1 NVIDIA A100 GPU:
 srun ./prog.x
 ```
 
-Note that this script allocates also 2 CPU cores per task.
+Note that this script allocates also 4 CPU cores per task.
 These extra CPU cores are especially useful for OpenMP runtime.
 
 For multi-GPU jobs using MPI:

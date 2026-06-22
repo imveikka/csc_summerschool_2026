@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 // SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
 //
 // SPDX-License-Identifier: MIT
 
->>>>>>> origin/main
 /*
  * This code builds upon the solution of 02-streams-asynckernel.
  *
@@ -15,8 +12,8 @@
  * - additionally, change host memory allocation and freeing into pinned memory calls
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include "error_checking.hpp"
 
@@ -25,49 +22,56 @@ __global__ void kernel_a(float *a, int n)
 {
   int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
+  // Evaluate the trigonometric identity
+  // sin^2(x) + cos^2(x) = 1
+  // Very light kernel, one sin/cos evaluation per element
   if (tid < n) {
-    float x = tid;
+    float x = 0.001f * float(tid % 1000);
+    float s = sinf(x);
+    float c = cosf(x);
 
-    for (int i = 0; i < 30; ++i) {
-      x = sinf(x) + cosf(x);
-    }
-
-    a[tid] = x;
+    a[tid] = s * s + c * c;
   }
 }
 
-__global__ void kernel_b(float *a, int n)
+
+__global__ void kernel_b(float *b, int n)
+{
+  int tid = threadIdx.x + blockIdx.x * blockDim.x;
+
+  // Heavy kernel: repeatedly updates x using sine, cosine, and arctangent
+  // Converges to 1.313534
+  if (tid < n) {
+    float x = 0.001f * float(tid % 1000) + 1.0f;
+
+    for (int i = 0; i < 200; ++i) {
+      x = sinf(x) + cosf(x) + 0.1f * atanf(x);
+    }
+
+    b[tid] = x;
+  }
+}
+
+__global__ void kernel_c(float *c, int n)
 {
   int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
   if (tid < n) {
-    float x = tid;
+    float x = 0.001f * float(tid % 1000);
 
-    for (int i = 0; i < 30; ++i) {
-      x = sqrtf(x + 1.0f);
+    // Fixed-point iteration for cos(x) = x.
+    // Converges to ~0.739085
+    // Medium
+    for (int i = 0; i < 50; ++i) {
+      x = cosf(x);
     }
 
-    a[tid] = x;
-  }
-}
-
-__global__ void kernel_c(float *a, int n)
-{
-  int tid = threadIdx.x + blockIdx.x * blockDim.x;
-
-  if (tid < n) {
-    float x = tid;
-
-    for (int i = 0; i < 30; ++i) {
-      x = logf(x + 1.0f);
-    }
-
-    a[tid] = x;
+    c[tid] = x;
   }
 }
 
 int main() {
-  constexpr size_t N = 1<<26; // ~68 million items
+  constexpr size_t N = 1<<24; // ~64 MiB array
 
   constexpr int blocksize = 256;
   constexpr int gridsize =(N-1+blocksize)/blocksize;
@@ -119,15 +123,15 @@ int main() {
 
   // Synchronize each stream with host before printing out results
   HIP_ERRCHK(hipStreamSynchronize(stream_a));
-  for (int i = 0; i < 20; ++i) printf("%f ", a[i]);
+  for (int i = 0; i < 10; ++i) printf("%f ", a[i]);
   printf("\n");
 
   HIP_ERRCHK(hipStreamSynchronize(stream_b));
-  for (int i = 0; i < 20; ++i) printf("%f ", b[i]);
+  for (int i = 0; i < 10; ++i) printf("%f ", b[i]);
   printf("\n");
 
   HIP_ERRCHK(hipStreamSynchronize(stream_c));
-  for (int i = 0; i < 20; ++i) printf("%f ", c[i]);
+  for (int i = 0; i < 10; ++i) printf("%f ", c[i]);
   printf("\n");
 
   // Free device and host memory allocations

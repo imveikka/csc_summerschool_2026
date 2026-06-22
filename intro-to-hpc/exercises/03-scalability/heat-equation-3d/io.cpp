@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2021 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 /* I/O related functions for heat equation solver */
 
 #include <string>
-#include <iomanip> 
+#include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <string>
 #ifndef NO_MPI
@@ -27,11 +32,11 @@ void write_field(Field& field, const int iter, const ParallelData& parallel)
         // Copy the inner data
         auto full_data = Matrix<double>(height, width, length);
         for (int i = 0; i < field.nx; i++)
-            for (int j = 0; j < field.ny; j++) 
-              for (int k = 0; k < field.nz; k++) 
+            for (int j = 0; j < field.ny; j++)
+              for (int k = 0; k < field.nz; k++)
                  full_data(i, j, k) = field(i + 1, j + 1, k + 1);
-          
-#ifndef NO_MPI     
+
+#ifndef NO_MPI
         // Receive data from other ranks
         for (int p = 1; p < parallel.size; p++) {
             int ix = parallel.coords[0] * field.nx;
@@ -41,7 +46,7 @@ void write_field(Field& field, const int iter, const ParallelData& parallel)
                      parallel.comm, MPI_STATUS_IGNORE);
         }
 #endif
-        // Write out the middle slice of data to a png file 
+        // Write out the middle slice of data to a png file
         std::ostringstream filename_stream;
         filename_stream << "heat_" << std::setw(4) << std::setfill('0') << iter << ".png";
         std::string filename = filename_stream.str();
@@ -51,8 +56,8 @@ void write_field(Field& field, const int iter, const ParallelData& parallel)
         save_png(full_data.data(height / 2, 0, 0), width, length, filename.c_str(), 'c');
 #endif
     } else {
-#ifndef NO_MPI     
-        // Send data 
+#ifndef NO_MPI
+        // Send data
         MPI_Send(field.temperature.data(1, 1, 1), 1, parallel.subarraytype,
                  0, 22, parallel.comm);
 #endif

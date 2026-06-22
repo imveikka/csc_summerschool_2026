@@ -11,8 +11,8 @@
  *   - copy data back to the host using the stream
  *   - destroy the stream
  */
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include "error_checking.hpp"
 
@@ -79,5 +79,5 @@ int main() {
 
   HIP_ERRCHK(hipFree(d_a));
   free(a);
-  HIP_ERRCHK(hipStreamDestroy(stream));float max_error(float *a, int n)
+  HIP_ERRCHK(hipStreamDestroy(stream));
 }

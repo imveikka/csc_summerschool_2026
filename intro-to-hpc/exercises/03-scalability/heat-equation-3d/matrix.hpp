@@ -1,12 +1,11 @@
+// SPDX-FileCopyrightText: 2021 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #pragma once
 #include <vector>
-#include <cassert>
-#if defined UNIFIED_MEMORY || defined PINNED_MEMORY
 #include <cstring>
-#include <hip/hip_runtime.h>
-#include "error_checks.h"
-#endif
-#include <iostream>
+#include <cassert>
 
 // Generic 3D matrix array class.
 //
@@ -25,14 +24,14 @@ class Matrix
 private:
 
     // Internal storage
-#if defined UNIFIED_MEMORY || defined PINNED_MEMORY
-    T *_data = nullptr;
-#else    
+#ifdef USE_STD_VECTOR
     std::vector<T> _data;
+#else
+    T *_data = nullptr;
 #endif
 
     // Internal 1D indexing
-    int indx(int i, int j, int k) const {
+    const int indx(int i, int j, int k) const {
         //assert that indices are reasonable
         assert(i >= 0 && i <  nx);
         assert(j >= 0 && j <  ny);
@@ -50,27 +49,44 @@ public:
     Matrix() = default;
     // Allocate at the time of construction
     Matrix(int nx, int ny=1, int nz=1) : nx(nx), ny(ny), nz(nz) {
-#ifdef UNIFIED_MEMORY
-        GPU_CHECK( hipMallocManaged(&_data, nx*ny*nz*sizeof(T)) );
-#elif defined PINNED_MEMORY
-        GPU_CHECK( hipHostMalloc(&_data, nx*ny*nz*sizeof(T)) );
-#else
+#ifdef USE_STD_VECTOR
         _data.resize(nx * ny * nz);
+#else
+        _data = new T [nx*ny*nz];
 #endif
     };
 
+    void allocate(int nx_in=1, int ny_in=1, int nz_in=1) {
+        nx = nx_in;
+        ny = ny_in;
+        nz = nz_in;
+#ifdef USE_STD_VECTOR
+        _data.resize(nx * ny * nz);
+#else
+	delete[] _data;
+        _data = new T [nx*ny*nz];
+#endif
+
+    };
+
+    // standard (i,j) syntax for setting elements
+    T& operator()(int i=0, int j=0, int k=0) {
+        return _data[ indx(i, j, k) ];
+    }
+
+    // standard (i,j) syntax for getting elements
+    const T& operator()(int i=0, int j=0, int k=0) const {
+        return _data[ indx(i, j, k) ];
+    }
+
 // Rule of five when we manage memory ourselves
-#if defined UNIFIED_MEMORY || defined PINNED_MEMORY
+#ifndef USE_STD_VECTOR
     // Copy constructor
     Matrix(const Matrix& other) {
-      nx = other.nx;     
-      ny = other.ny;     
+      nx = other.nx;
+      ny = other.ny;
       nz = other.nz;
-#ifdef UNIFIED_MEMORY
-      GPU_CHECK( hipMallocManaged(&_data, nx*ny*nz*sizeof(T)) );
-#else
-      GPU_CHECK( hipHostMalloc(&_data, nx*ny*nz*sizeof(T)) );
-#endif
+      _data = new T [nx*ny*nz];
       std::memcpy(_data, other._data, nx*ny*nz*sizeof(T));
     }
 
@@ -86,8 +102,8 @@ public:
 
     // Move constructor
     Matrix(Matrix&& other) {
-      nx = other.nx;     
-      ny = other.ny;     
+      nx = other.nx;
+      ny = other.ny;
       nz = other.nz;
       _data = other._data;
       other._data = nullptr;
@@ -95,8 +111,8 @@ public:
 
     // Move assignment
     Matrix& operator= (Matrix&& other) {
-      nx = other.nx;     
-      ny = other.ny;     
+      nx = other.nx;
+      ny = other.ny;
       nz = other.nz;
       _data = other._data;
       other._data = nullptr;
@@ -105,45 +121,26 @@ public:
 
     // Destructor
     ~Matrix() {
-#ifdef UNIFIED_MEMORY
-       GPU_CHECK( hipFree(_data) );
-#else
-       GPU_CHECK( hipHostFree(_data) );
-#endif
-         
+       delete[] _data;
      }
-    
+
 #endif
 
-    void allocate(int nx_in=1, int ny_in=1, int nz_in=1) {
-        nx = nx_in;
-        ny = ny_in;
-        nz = nz_in;
-#ifdef UNIFIED_MEMORY
-        GPU_CHECK( hipMallocManaged(&_data, nx*ny*nz*sizeof(T)) );
-#elif defined PINNED_MEMORY
-        GPU_CHECK( hipHostMalloc(&_data, nx*ny*nz*sizeof(T)) );
-#else
-        _data.resize(nx * ny * nz);
-#endif
-    };
-
-    // standard (i,j) syntax for setting elements
-    T& operator()(int i=0, int j=0, int k=0) {
-        return _data[ indx(i, j, k) ];
-    }
-
-    // standard (i,j) syntax for getting elements
-    const T& operator()(int i=0, int j=0, int k=0) const {
-        return _data[ indx(i, j, k) ];
-    }
 
     // provide possibility to get raw pointer for data at index (i,j,k) (needed for MPI)
     T* data(int i=0, int j=0, int k=0) {
-#if defined UNIFIED_MEMORY || defined PINNED_MEMORY
-       return _data + i * ny * nz + j * nz + k;
+#ifdef USE_STD_VECTOR
+        return _data.data() + i * ny * nz + j * nz + k;
 #else
-       return _data.data() + i * ny * nz + j * nz + k;
+        return _data + i * ny * nz + j * nz + k;
+#endif
+    }
+
+    const T* data(int i=0, int j=0, int k=0) const {
+#ifdef USE_STD_VECTOR
+        return _data.data() + i * ny * nz + j * nz + k;
+#else
+        return _data + i * ny * nz + j * nz + k;
 #endif
     }
 

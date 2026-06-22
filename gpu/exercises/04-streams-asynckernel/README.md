@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2010 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Executing multiple GPU kernels concurrently with HIP streams
 
 This exercise demonstrates how multiple HIP streams can be used to execute independent GPU kernels concurrently. 
@@ -8,9 +14,9 @@ This causes the kernels to execute sequentially.
 If your program executes correctly, you should get the following output:
 
 ```
-1.258728 1.258728 1.258728 ...
-1.618034 1.618034 1.618034 ...
-0.000000 0.064829 0.066859 ...
+1.000000 1.000000 1.000000 ...
+1.313534 1.313534 1.313534 ...
+0.739085 0.739085 0.739085 ...
 ```
 
 Printing the 10 first values in each kernel output array.
@@ -65,23 +71,27 @@ Which synchronizes the entire device rather than a single stream.
 
 </details>
 
-## Profiling kernel concurrency
+## Profiling kernel concurrency on LUMI
 
 After completing the exercise, validate that the kernels execute concurrently.
 
+Launch your application with rocprofv3 at the end of your batch job script, by replacing your normal launch command with the following:
+
 ```bash
-run_tue rocprofv3 --hip-trace --kernel-trace --output-format pftrace -- ./<yourapp>
+srun  rocprofv3 --runtime-trace --output-format pftrace -- ./<yourapp>
 ```
 
-This generates a file with a suffix: `.pftrace`
+This generates a file with a suffix: `.pftrace`, under a directory `nidXXXX`.
+
+The directory identifier, `nidXXXX`, is based on the compute node you ran your program in.
 
 Copy the file to your local machine:
 
 ```bash
-scp <your_username>@lumi.csc.fi:/scratch/project_462001376/<your_username>/hip-programming/streams/02-streams-asynckernel/<path-to-your-file>.pftrace .
+scp <your_username>@lumi.csc.fi:/scratch/project_462001452/<your_username>/hip-programming/streams/04-streams-asyncmemcopy/nidXXXX/<xyz_results.pftrace> .
 ```
 
-Replace the `<your_username>` and `<path-to-your-file>` sections in the above.
+Replace the `<your_username>`, `nidXXXX` and `<xyz_results.pftrace>` sections in the above.
 The `.` at the end means that the file will be copied to the current directory.
 
 You can open the trace in either:
@@ -97,7 +107,7 @@ The kernels in this exercise are synthetic workloads only for teaching purposes.
 
 Each GPU thread performs repeated floating-point computations using mathematical functions (e.g. `sin`, `cos`, `log`).
 
-The workloads copy and operate on large arrays (~256 MB per array) and are quite heavy computationally (although quite redundant)
+The workloads copy and operate on large arrays (~64 MB per array) and are quite heavy computationally (although quite redundant)
 so that concurrent execution, as well as data transfers, become visible in the profiling tools.
 
 </details>

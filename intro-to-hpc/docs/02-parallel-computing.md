@@ -283,7 +283,7 @@ Moving particles
 </div>
 <div class=column>
 
- ![](img/scaling.svg){.center width=80%}
+ ![](img/scaling.svg){.center width=100%}
 
 </div>
 
@@ -299,7 +299,7 @@ Moving particles
 
 The fraction of non-parallelizable parts limits the maximum speedup
 
-![](img/AmdahlsLaw.svg){.center width=50%}
+![](img/amdahl.svg){.center width=60%}
 
 
 # Communication to computation ratio

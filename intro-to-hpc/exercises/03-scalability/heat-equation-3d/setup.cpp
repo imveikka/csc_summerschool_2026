@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 #include <string>
 #include <cstdlib>
 #include <iostream>
@@ -18,15 +22,15 @@ void initialize(int argc, char *argv[], Field& current,
      */
 
 
-    int height = 480;             //!< Field dimensions with default values
-    int width = 480;
-    int length = 480;
+    int height = 800;             //!< Field dimensions with default values
+    int width = 800;
+    int length = 800;
 
     std::string input_file;        //!< Name of the optional input file
 
     bool read_file = 0;
 
-    nsteps = 3000;
+    nsteps = 500;
 
     switch (argc) {
     case 1:
@@ -68,27 +72,31 @@ void initialize(int argc, char *argv[], Field& current,
     }
 
     // copy "current" field also to "previous"
-    previous = current;
+    // previous = current;
+    // "manual" assignment in order to ensure first touch
+    previous.setup(height, width, length, parallel);
+#ifndef NO_FIRST_TOUCH
+#pragma omp parallel for collapse(2) schedule(static)
+#endif
+    for (int i = 0; i < current.nx + 2; i++) {
+        for (int j = 0; j < current.ny + 2; j++) {
+            for (int k = 0; k < current.nz + 2; k++) {
+               previous(i, j, k) = current(i, j, k);
+            }
+        }
+    }
 
     if (0 == parallel.rank) {
-        std::cout << "Simulation parameters: " 
+        std::cout << "Simulation parameters: "
                   << "height: " << height << " width: " << width << " length: " << length
                   << " time steps: " << nsteps << std::endl;
-        std::cout << "Number of MPI tasks: " << parallel.size 
-                  << " (" << parallel.dims[0] << " x " << parallel.dims[1] << " x " 
+        std::cout << "Number of MPI tasks: " << parallel.size
+                  << " (" << parallel.dims[0] << " x " << parallel.dims[1] << " x "
                   << parallel.dims[2] << ")" << std::endl;
-        std::cout << "Number of GPUs per node: " << parallel.dev_count << std::endl;
-       #ifndef NO_MPI
-        #if defined MPI_DATATYPES && MPI_NEIGHBORHOOD
-        std::cout << "Both MPI_DATATYPES and MPI_NEIGHBORHOOD defined; "
-                  << "using isend/irecv with datatypes in communication" << std::endl;
-        #elif defined MPI_DATATYPES
-        std::cout << "Using isend/irecv with datatypes in communication" << std::endl;
-        #elif defined MPI_NEIGHBORHOOD
-        std::cout << "Using neighborhood collective in communication" << std::endl;
-        #else
-        std::cout << "Using manual packing of send/recv buffers" << std::endl;
-        #endif
-        #endif
+#ifdef _OPENMP
+        std::cout << "Number of OpenMP threads: " << parallel.num_threads << std::endl;
+#else
+        std::cout << "OpenMP disabled" << std::endl;
+#endif
     }
 }

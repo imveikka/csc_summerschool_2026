@@ -17,12 +17,12 @@ lang:   en
 <br>
 <br>
 
-- Why to use supercomputers?
+- Why use supercomputers?
 - What are supercomputers?
 - Current trends in high-performance computing
 
 
-# Why to use supercomputers? {.section}
+# Why use supercomputers? {.section}
 
 # Supercomputer application areas
 
@@ -53,9 +53,9 @@ lang:   en
 </div>
 <div class=column>
 <center>
-![](img/cray-x-mp.jpg){.center width=100%}
+![](https://a3s.fi/summerschool/assets/images/cray-x-mp.jpg){.center width=100%}
 Cray X-MP at CSC (1989)<br>
-Image: CSC Archives
+<small>Image: CSC Archives</small>
 </center>
 </div>
 
@@ -71,8 +71,9 @@ Image: CSC Archives
 </div>
 <div class=column>
 <center>
-![](img/lumi.jpg){.center width=100%}
-EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)
+![](https://a3s.fi/summerschool/assets/images/lumi.jpg){.center width=100%}
+EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)<br>
+<small>Image: Mikael Kanerva (CSC)</small>
 </center>
 </div>
 
@@ -133,8 +134,8 @@ EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)
 </div>
 <div class=column style=width:39%>
 <center>
-![](img/top_500.png){.center width=100%}
-Image: [top500.org](https://top500.org/)
+![](https://a3s.fi/summerschool/assets/images/top500_perfdevel_nov25.png){.center width=100%}
+<small>Image: <https://top500.org/statistics/perfdevel/></small>
 </center>
 </div>
 
@@ -155,25 +156,46 @@ Image: [top500.org](https://top500.org/)
 # GPUs are becoming the norm
 
 <center>
-![](img/top500_nov21.svg){.center width=65%}
+![](https://a3s.fi/summerschool/assets/images/top500_nov21.svg){.center width=60%}
 
-- Top500 supercomputers grouped by the accelator type (Nov 2021 list)
+Top500 supercomputers grouped by the accelator type (Nov 2021 list)<br>
+<small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
 # GPUs are becoming the norm
 
 <center>
-![](img/top500_nov22.svg){.center width=65%}
+![](https://a3s.fi/summerschool/assets/images/top500_nov22.svg){.center width=60%}
 
-- Top500 supercomputers grouped by the accelator type (Nov 2022 list)
+Top500 supercomputers grouped by the accelator type (Nov 2022 list)<br>
+<small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
 # GPUs are becoming the norm
 
 <center>
-![](img/top500_nov24.svg){.center width=65%}
+![](https://a3s.fi/summerschool/assets/images/top500_nov23.svg){.center width=60%}
 
-- Top500 supercomputers grouped by the accelator type (Nov 2024 list)
+Top500 supercomputers grouped by the accelator type (Nov 2023 list)<br>
+<small>Image: <https://top500.org/statistics/treemaps/></small>
+</center>
+
+# GPUs are becoming the norm
+
+<center>
+![](https://a3s.fi/summerschool/assets/images/top500_nov24.svg){.center width=60%}
+
+Top500 supercomputers grouped by the accelator type (Nov 2024 list)<br>
+<small>Image: <https://top500.org/statistics/treemaps/></small>
+</center>
+
+# GPUs are becoming the norm
+
+<center>
+![](https://a3s.fi/summerschool/assets/images/top500_nov25.svg){.center width=60%}
+
+Top500 supercomputers grouped by the accelator type (Nov 2025 list)<br>
+<small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
 

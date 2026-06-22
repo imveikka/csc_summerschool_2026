@@ -1,5 +1,9 @@
+// SPDX-FileCopyrightText: 2021 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 // Utility functions for heat equation solver
-//    NOTE: This file does not need to be edited! 
+//    NOTE: This file does not need to be edited!
 
 #ifdef NO_MPI
 #include <omp.h>
@@ -31,7 +35,7 @@ double average(const Field& field)
      return average;
 }
 
-double timer() 
+double timer()
 {
     double t0;
 #ifdef NO_MPI
@@ -41,4 +45,3 @@ double timer()
 #endif
     return t0;
 }
-

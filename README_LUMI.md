@@ -60,7 +60,7 @@ to the file `$HOME/.bashrc`.
 
 For editing program source files you can use e.g. the *nano* editor:
 
-    nano test.F90
+    nano prog.F90
 
 (`^` in nano's shortcuts refer to **Ctrl** key, *i.e.* in order to save the file and exit the editor press `Ctrl+X`)
 Also other popular editors such as *emacs* and *vim* are available.
@@ -79,17 +79,16 @@ LUMI has several programming environments.
 
 For CPU programming use:
 ```bash
-module load LUMI/25.03
-module load partition/C
+module load LUMI/25.03 partition/C
 ```
 
 #### MPI
 
 Compilation of MPI programs in C, C++, and Fortran:
 ```bash
-cc -O3 -Wall test.c -o test.x
-CC -O3 -Wall test.cpp -o test.x
-ftn -O3 test.F90 -o test.x
+cc -O3 -Wall prog.c -o prog.x
+CC -O3 -Wall prog.cpp -o prog.x
+ftn -O3 prog.F90 -o prog.x
 ```
 
 The wrapper commands include automatically all the flags needed for building MPI programs.
@@ -99,9 +98,9 @@ The wrapper commands include automatically all the flags needed for building MPI
 Both pure OpenMP and hybrid MPI+OpenMP programs can be compiled with the same wrappers
 by including `-fopenmp` flag:
 ```bash
-cc -fopenmp -O3 -Wall test.c -o test.x
-CC -fopenmp -O3 -Wall test.cpp -o test.x
-ftn -fopenmp -O3 test.F90 -o test.x
+cc -fopenmp -O3 -Wall prog.c -o prog.x
+CC -fopenmp -O3 -Wall prog.cpp -o prog.x
+ftn -fopenmp -O3 prog.F90 -o prog.x
 ```
 
 #### HDF5
@@ -121,25 +120,23 @@ LUMI has several programming environments.
 
 For GPU programming use:
 ```bash
-module load LUMI/25.03
-module load partition/G
-module load rocm/6.3.4
+module load LUMI/25.03 partition/G rocm/6.3.4
 ```
 
 #### HIP and MPI+HIP
 
 Compilation of HIP and multi-GPU MPI+HIP programs:
 ```bash
-CC -xhip -O3 test.cpp -o test.x
+CC -xhip -O3 prog.cpp -o prog.x
 ```
 
 ### OpenMP offload and MPI+OpenMP offload
 
 The compilation command is the same as in the CPU case:
 ```bash
-cc -fopenmp -O3 -Wall test.c -o test.x
-CC -fopenmp -O3 -Wall test.cpp -o test.x
-ftn -fopenmp -O3 test.F90 -o test.x
+cc -fopenmp -O3 -Wall prog.c -o prog.x
+CC -fopenmp -O3 -Wall prog.cpp -o prog.x
+ftn -fopenmp -O3 prog.F90 -o prog.x
 ```
 
 **Note!** This will generate OpenMP offload code when the appropriate
@@ -147,6 +144,24 @@ GPU modules are loaded (in particular `craype-accel-amd-gfx90a` that is
 loaded by `partition/G`).
 It's important to ensure that GPU code is generated as the compilation
 command is the same in CPU and GPU cases.
+
+To obtain compiler diagnostics:
+
+```bash
+cc -fopenmp -O3 -Wall -fsave-loopmark prog.c -o prog.x
+CC -fopenmp -O3 -Wall -fsave-loopmark prog.cpp -o prog.x
+ftn -fopenmp -O3 -hmsgs -hlist=m prog.F90 -o prog.x
+```
+
+See [HPE Cray Clang C and C++ Quick Reference (17.0.1)](https://support.hpe.com/hpesc/public/docDisplay?docId=dp00004439en_us)
+and [ftn man pages](https://cpe.ext.hpe.com/docs/24.03/cce/man1/crayftn.1.html)
+for further information.
+
+Alternatively to Cray compilers above, the C and C++ codes can also be compiled with AMD Clang:
+```bash
+amdclang -fopenmp -O3 --offload-arch=gfx90a prog.c -o prog.x
+amdclang++ -fopenmp -O3 --offload-arch=gfx90a prog.cpp -o prog.x
+```
 
 
 ## Running
@@ -180,7 +195,7 @@ all the general partitions available on LUMI.
 
 ### CPU jobs
 
-Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per node, and 2 CPU core per task, i.e., 8 CPU cores within one node in total:
+Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per node, and 2 CPU core per task, as well as 1 GB RAM per core, i.e., 8 CPU cores and 8 GB RAM within one node in total:
 
 ```bash
 #!/bin/bash
@@ -191,6 +206,7 @@ Example `job.sh` for running MPI+OpenMP program reserving 1 node, 4 tasks per no
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=2
+#SBATCH --mem-per-cpu=1G
 #SBATCH --time=00:05:00
 
 # Set the number of threads based on cpus-per-task
@@ -226,20 +242,23 @@ Example `job.sh` for running a GPU program reserving 1 GPU (= 1 GCD of the AMD M
 #SBATCH --partition=small-g
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=7
+#SBATCH --cpus-per-task=4
 #SBATCH --gpus-per-node=1
 #SBATCH --time=00:05:00
+
+# Enable GPU-aware MPI by uncommenting the line below
+#export MPICH_GPU_SUPPORT_ENABLED=1
 
 # Run the program
 srun ./prog.x
 ```
 
-Note that this script allocates also 7 CPU cores per task, which is a fair share of a single GPU out of the full node.
+Note that this script allocates also 4 CPU cores per task.
 These extra CPU cores are especially useful for OpenMP runtime.
 
 For multi-GPU jobs using MPI:
 - Change the number of MPI tasks and GPUs per node: `--ntasks-per-node=<number_of_mpi_tasks>` and `--gpus-per-node=<number_of_gpus>`
-- Include `export MPICH_GPU_SUPPORT_ENABLED=1` before running the program to enable GPU-aware MPI
+- Uncomment `export MPICH_GPU_SUPPORT_ENABLED=1` to enable GPU-aware MPI
 
 
 ### Interactive jobs

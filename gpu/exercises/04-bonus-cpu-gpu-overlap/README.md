@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2010 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Overlapping CPU and GPU work
 
 This exercise demonstrates the asynchronocity between the GPU and CPU, and how arbitrary CPU function execution can overlap with GPU kernel execution.
@@ -34,6 +40,10 @@ Only the following HIP function is needed in this exercise:
 
 ### Compiling
 
+**Note!** This bonus exercise uses ROCm-specific profiling tools and ROCTx ranges. It is intended for LUMI during the course.
+
+The profiling instructions will not work on Mahti as written, because Mahti uses NVIDIA GPUs. To run a similar profiling exercise on Mahti, the ROCTx annotations and `rocprofv3` commands would need to be replaced with NVIDIA tools, e.g. NVTX annotations and Nsys.
+
 This is a bonus exercise that implements `roctX` ranges to make CPU work visible in the profiling timeline:
 
 - `roctxRangePush()`
@@ -42,25 +52,25 @@ This is a bonus exercise that implements `roctX` ranges to make CPU work visible
 Compile the program with `rocTX` linked:
 
 ```bash
-module load rocm/6.3.4
-
-CC -xhip -lroctx64 overlapping_work.cpp -o overlapping_work
+CC -xhip -lroctx64 main.cpp -o prog.x
 ```
 
 ## Profiling CPU/GPU overlap
 
 Run the program with ROCm profiling **and** `roctx` enabled:
 
+Launch your application with rocprofv3 **and** `roctx` enabled, by replacing your normal launch command at the end of your job script with the following:
+
 ```bash
-run_tue rocprofv3 --runtime-trace --marker-trace --output-format pftrace -- ./<yourapp>
+srun rocprofv3 --runtime-trace --marker-trace --output-format pftrace -- ./<yourapp>
 ```
 
-This generates a file with a suffix: `.pftrace`
+This generates a file with a suffix: `.pftrace`, under a directory `nidXXXX`.
 
 Copy the file to your local machine:
 
 ```bash
-scp <your_username>@lumi.csc.fi:/scratch/project_462001376/<your_username>/hip-programming/streams/0X-bonus-cpu-gpu-overlap/<path-to-your-file>.pftrace .
+scp <your_username>@lumi.csc.fi:/scratch/project_462001452/<your_username>/summerschool/gpu/exercises/04-bonus-cpu-gpu-overlap/<path-to-your-file>.pftrace .
 ```
 
 Replace the `<your_username>` and `<path-to-your-file>` sections in the above.  

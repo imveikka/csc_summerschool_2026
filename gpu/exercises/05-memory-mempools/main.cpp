@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+//
+// SPDX-License-Identifier: MIT
+
 /*
  * This code compares different GPU memory allocation strategies.
  *
@@ -14,6 +18,7 @@
 #include <cstdio>
 #include <cstring>
 #include <chrono>
+#include <string>
 #include "error_checking.hpp"
 
 /* Blocksize divisible by the warp size */

@@ -12,8 +12,8 @@
  *   - destroy the stream
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include "error_checking.hpp"
 
@@ -39,8 +39,6 @@ float max_error(float *a, int n)
     if (error > max_err) max_err = error;
   }
   return max_err;
-}
-
 }
 
 int main() {

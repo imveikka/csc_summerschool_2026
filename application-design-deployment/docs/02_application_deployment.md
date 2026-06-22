@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
 ---
 title:  HPC application deployment & production
 event:  CSC Summer School in High-Performance Computing 2026
@@ -127,8 +132,35 @@ Step 0: study the computing centre's recommendations
 
 
 # Example: task – thread balance on 10 nodes
-<div class=column style=width:100%>
-![](images/vlasiator_roihucpu_task_balance.png){.center width=50%}
+<div class=column style=width:35%>
+- Hybrid MPI-OpenMP application on Roihu CPU
+- Full node (384 cores)
+- All combinations of $$n_\mathrm{tasks} \times n_\mathrm{threads} = 384$$
+</div>
+
+<div class=column style=width:63%>
+![](images/vlasiator_roihucpu_task_balance.png)
+</div>
+
+
+# Performance properties – intranode optimisation
+<div class=column style=width:49%>
+- Hardware complexity
+   - Deep memory hierarchy
+   - CPU clock scaling
+- Requires detailed investigations
+   - Task – thread balance
+   - Profiling
+   - Compiler options
+- What limits your application?
+   - Computation
+   - Communication
+   - Memory access
+</div>
+
+<div class=column style=width:49%>
+- HPC centres sometimes offer advanced node-level optimisation courses for their architecture
+- Can be very complex!
 </div>
 
 
@@ -137,7 +169,7 @@ How efficiently is your code running in parallel?
 
 - Weak scaling:
     - Start with a problem run on a single core/CPU/GPU/node
-    - **Multiply** both **problem size** and core/CPU/GPU/node count by *n*
+    - **Multiply** both **problem size** and core/CPU/GPU/node count by $n$
     - Plot execution time vs. problem size: **should be flat**
 - Strong scaling:
     - Start with problem run on a small amount of resources
@@ -204,7 +236,20 @@ How efficiently is your code running in parallel?
    - Keep track of phases, changes, incidents
 - Plan **post-run** steps
    - Analysis
-   - Transfers, backups, archival of metadata and data
+   - Transfers, backups, metadata and data archival
+
+# Example job script recording run settings
+```bash
+#SBATCH <...>
+# record job script
+cp $0 job_script_${0}_$SLURM_JOBID
+# record environment
+env > job_env_$SLURM_JOBID
+# record modules
+module list > job_modules_$SLURM_JOBID
+# record code version
+srun -n 1 my_code --version > job_version_$SLURM_JOBID
+```
 
 
 # Start the job!

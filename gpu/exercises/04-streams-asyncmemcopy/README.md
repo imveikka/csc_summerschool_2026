@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2010 CSC - IT Center for Science Ltd. <www.csc.fi>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Using asynchronous memory copies for multiple streams
 
 Previously, kernels were launched concurrently in separate HIP streams, but memory copies back to the host were still blocking.
@@ -13,9 +19,9 @@ cp ../04-streams-asynckernel/main.cpp .
 Expected output is still the same:
 
 ```
-1.258728 1.258728 1.258728 ...
-1.618034 1.618034 1.618034 ...
-0.000000 0.064829 0.066859 ...
+1.000000 1.000000 1.000000 ...
+1.313534 1.313534 1.313534 ...
+0.739085 0.739085 0.739085 ...
 ```
 
 ## Instructions
@@ -36,26 +42,28 @@ The following HIP functions are needed in this exercise:
 * `hipMemcpyAsync()`
 * `hipStreamSynchronize()`
 
-## Profiling kernel concurrency
+## Profiling kernel concurrency on LUMI
 
 After completing the exercise, inspect asynchronous memory copy behavior through
 `rocprof` and Perfetto.
 
-Run the program with ROCm profiling enabled:
+Run the program with ROCm profiling enabled (replace normal srun launch command with the following):
 
 ```bash
-run_tue rocprofv3 --hip-trace --kernel-trace --output-format pftrace -- ./<yourapp>
+srun  rocprofv3 --runtime-trace --output-format pftrace -- ./<yourapp>
 ```
 
-This generates a file with a suffix: `.pftrace`
+This generates a file with a suffix: `.pftrace`, under a directory `nidXXXX`.
+
+The directory identifier, `nidXXXX`, is based on the compute node you ran your program in.
 
 Copy the file to your local machine:
 
 ```bash
-scp <your_username>@lumi.csc.fi:/scratch/project_462001376/<your_username>/hip-programming/streams/03-streams-asyncmemcpy/<path-to-your-file>.pftrace .
+scp <your_username>@lumi.csc.fi:/scratch/project_462001452/<your_username>/hip-programming/streams/04-streams-asyncmemcopy/nidXXXX/<xyz_results.pftrace> .
 ```
 
-Replace the `<your_username>` and `<path-to-your-file>` sections in the above.  
+Replace the `<your_username>`, `nidXXXX` and `<xyz_results.pftrace>` sections in the above.  
 The `.` at the end means that the file will be copied to the current directory.
 
 You can open the trace in either:
