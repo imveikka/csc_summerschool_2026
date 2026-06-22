@@ -17,12 +17,12 @@ lang:   en
 <br>
 <br>
 
-- Why use supercomputers?
+- Why to use supercomputers?
 - What are supercomputers?
 - Current trends in high-performance computing
 
 
-# Why use supercomputers? {.section}
+# Why to use supercomputers? {.section}
 
 # Supercomputer application areas
 
@@ -79,9 +79,26 @@ EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)<br>
 
 # Anatomy of a supercomputer
 
-![](img/cluster_diagram.svg){.center width=100%}
+<center>
+![](https://a3s.fi/summerschool/assets/images/lumi-racks.jpg){.center width=55%}
+LUMI supercomputer<br>
+<small>Image: Mikael Kanerva (CSC)</small>
+</center>
 
-# Closer look on supercomputer nodes
+
+# Interconnect
+
+<div class=column style="width:45%">
+![](https://a3s.fi/summerschool/assets/images/lumi-dragonfly.svg){.center width=100%}
+</div>
+<div class=column style="width:52%">
+<br><br>
+Dragonfly topology<br>
+<br>
+<small>Image:<br> <https://docs.lumi-supercomputer.eu/hardware/network/></small>
+</div>
+
+# Supercomputer nodes
 
  ![](img/anatomy.svg){.center width=55%}
 
@@ -103,6 +120,16 @@ EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)<br>
 &rarr; *Parallel algorithms* are needed to utilize supercomputer
 </center>
 
+# Why parallel processing?
+
+- Physical limits on clock speed
+  - Power consumption and heat dissipation
+- Energy efficiency
+  - Multiple simpler cores running in parallel are often more power-efficient than one extremely fast core
+- Scalability
+  - Parallel systems can scale by adding more cores
+
+
 # Parallel processing
 
 - Modern supercomputers (and regular computers) rely on parallel processing
@@ -115,9 +142,16 @@ EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)<br>
   - Core executes multiple instructions in parallel (superscalar execution)
   - Core executes different parts of instructions in parallel
 
-# Why parallel processing?
 
-- Power consumption of CPU: $~f^3$
+# Hardware hierarchy: LUMI-C as an example
+
+- A supercomputer has multiple compute nodes &rarr; inter-node link
+- A compute node has multiple sockets &rarr; intra-node link
+- A socket is divided to NUMA nodes &rarr; DRAM channels per NUMA node
+- A NUMA node is divided to CCDs &rarr; L3 cache per CCD
+- A CCD is divided to cores &rarr; L1 and L2 caches per core
+- <https://docs.lumi-supercomputer.eu/hardware/lumic/>
+
 
 # Performance of supercomputers
 
@@ -153,7 +187,7 @@ EuroHPC JU LUMI (HPE Cray EX) <br>at CSC (2021–)<br>
 
 # Future of high-performance computing {.section}
 
-# GPUs are becoming the norm
+# GPUs have become the norm
 
 <center>
 ![](https://a3s.fi/summerschool/assets/images/top500_nov21.svg){.center width=60%}
@@ -162,7 +196,7 @@ Top500 supercomputers grouped by the accelator type (Nov 2021 list)<br>
 <small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
-# GPUs are becoming the norm
+# GPUs have become the norm
 
 <center>
 ![](https://a3s.fi/summerschool/assets/images/top500_nov22.svg){.center width=60%}
@@ -171,7 +205,7 @@ Top500 supercomputers grouped by the accelator type (Nov 2022 list)<br>
 <small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
-# GPUs are becoming the norm
+# GPUs have become the norm
 
 <center>
 ![](https://a3s.fi/summerschool/assets/images/top500_nov23.svg){.center width=60%}
@@ -180,7 +214,7 @@ Top500 supercomputers grouped by the accelator type (Nov 2023 list)<br>
 <small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
-# GPUs are becoming the norm
+# GPUs have become the norm
 
 <center>
 ![](https://a3s.fi/summerschool/assets/images/top500_nov24.svg){.center width=60%}
@@ -189,7 +223,7 @@ Top500 supercomputers grouped by the accelator type (Nov 2024 list)<br>
 <small>Image: <https://top500.org/statistics/treemaps/></small>
 </center>
 
-# GPUs are becoming the norm
+# GPUs have become the norm
 
 <center>
 ![](https://a3s.fi/summerschool/assets/images/top500_nov25.svg){.center width=60%}
@@ -199,13 +233,21 @@ Top500 supercomputers grouped by the accelator type (Nov 2025 list)<br>
 </center>
 
 
+# AI accelerators
+
+- Traditional HPC hardware has focused on high performance for double-precision compute (FP64)
+- Latest AI-targeted hardware focuses on lower-precision compute (FP32, FP16, FP8 and below)
+- Traditional HPC applications need to adapt to the hardware trends for maximal performance
+
+
 # Post-exascale challenges
 
 - Performance of supercomputers has increased exponentially for a long time
 - However, there are still challenges in continuing onwards from exascale supercomputers ($> 1 \times 10^{18}$ Flop/s)
-  - Power consumption: the exascale supercomputers consume >20 MW
+  - Power consumption: The exascale supercomputers consume >20 MW
   - Manufacturing: Transistor sizes being extremely small
   - Application scalability: how to program for 100,000 GPUs / 100,000,000 CPU cores?
+  - Fault tolerance: Some nodes may fail during a large-scale calculation
 
 
 # Cloud computing vs high-performance computing
@@ -214,8 +256,10 @@ Top500 supercomputers grouped by the accelator type (Nov 2025 list)<br>
   - Both enable remote execution of computations on a computer system with more computing power
 - Many differences
   - Different software and computing environment
-  - HPC: maximal performance (incl. high-end, tuned hardware and software) &rarr; for tightly coupled workloads
-  - Cloud: flexibility, fault-tolerance &rarr; for loosely coupled workloads
+  - HPC: maximal performance (incl. high-end, tuned hardware and software)<br>
+    &rarr; for tightly coupled workloads
+  - Cloud: flexibility, fault-tolerance<br>
+    &rarr; for loosely coupled workloads
 - HPC-as-a-Service changing the "traditional" way to use HPC
   - [HEAppE](https://heappe.eu), [LEXIS](https://lexis-project.eu), ...
 
@@ -235,11 +279,11 @@ Top500 supercomputers grouped by the accelator type (Nov 2025 list)<br>
 
 ![](img/sci.svg){.center width=40%}
 
-- **Goal for this school: everyone is able to write and modify HPC applications!**
+- Goal for this school: to obtain skills to write and modify HPC applications!
 
 # Summary
 
 - HPC is essential in many fields of research
 - Supercomputers base their performance on extreme parallelism
-  - Including GPUs nowadays
+  - Including GPUs and AI accelerators nowadays
 - Cloud computing as an option for accessing HPC resources
