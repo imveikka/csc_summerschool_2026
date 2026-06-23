@@ -5,12 +5,20 @@ SPDX-License-Identifier: CC-BY-4.0
 -->
 
 ---
-title:  Welcome to Summer School
+title:  Welcome to CSC Summer School in High-Performance Computing
 event:  CSC Summer School in High-Performance Computing 2026
 lang:   en
 ---
 
 # CSC Summer School in High-Performance Computing {.section}
+
+# CSC – IT Center for Science, Finland
+
+- CSC is a non-profit company that builds digital solutions for research, education, culture, and public administration
+- Jointly owned by the Finnish state and higher education institutions
+- Provides world-class national supercomputing resources (Puhti, Mahti, Roihu supercomputers)
+- Hosts EuroHPC JU LUMI supercomputer
+
 
 # It's 15th CSC Summer School in HPC!
 
