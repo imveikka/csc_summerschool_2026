@@ -13,12 +13,11 @@ by running the code with different node counts and collect the data systematical
 
 | Nodes | Runtime (s) | Resource cost (Node-s) | Speedup | Parallel efficiency | Electricity cost (Wh) | Monetary cost (€) |
 | ----: | ----------: | ---------------------: | ------: | ------------------: | ---------------------: | ----------------: |
-|    1  | 44.790237 | 44.790237  | 1.0               | 1.0               |                        |                   |
-|    2  | 17.476545 | 34.95309   | 2.562877101852797 | 1.2814385509263986|                        |                   |
-|    4  | 10.105651 | 40.422604  | 4.432197094477139 | 1.1080492736192848|                        |                   |
-|    8  | 5.770870  | 46.16696   | 7.761435797375438 | 0.9701794746719298|                        |                   |
-|   16  | 3.619398  | 57.910368  | 12.375051596978281| 0.7734407248111426|                        |                   |
-
+|    1  | 44.79 | 44.79 | 1.0   | 1.0  | 7.47 | 0.05 |
+|    2  | 17.48 | 34.95 | 2.56  | 1.28 | 5.83 | 0.04 |
+|    4  | 10.16 | 40.42 | 4.43  | 1.11 | 6.74 | 0.04 |
+|    8  | 5.77  | 46.17 | 7.76  | 0.97 | 7.69 | 0.05 |
+|   16  | 3.62  | 57.91 | 12.38 | 0.77 | 9.65 | 0.06 |
 
 The columns are calculated from the node count and the runtime as follows
 ($T_1$ is the runtime with a single node and $T_n$ is the runtime with $n$ nodes):
@@ -88,3 +87,6 @@ The [solution directory](solution/) contains discussion on the tasks below.
    the resource cost, speedup, and parallel efficiency for each row.
 
 5. Which node count would you suggest to use for running this code with the used input settings?
+
+Choosing all 16 nodes would still be reasonable choice here, based on runtime and the cost of the computation. One could choose 8 nodes (or even just 4) as the parallel efficiency is much better and the energy usage is lower.
+
