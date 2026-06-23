@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=0
 #SBATCH --time=00:10:00
-#SBATCH --output=slurm-%x-%J.out
+#SBATCH --output=slurm-%x.out
 
 # Run the program
 srun ./heat-equation-3d/build/heat3d 960 960 960 300
