@@ -27,7 +27,7 @@ void initialize(int argc, char *argv[], Field& current,
 
     bool read_file = 0;
 
-    nsteps = 5000;
+    nsteps = 500;
 
     switch (argc) {
     case 1:

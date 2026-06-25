@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=heat
+#SBATCH --job-name=mpi_09
 #SBATCH --account=project_462001452
 #SBATCH --reservation=SummerSchoolCPU
 #SBATCH --partition=small
@@ -8,7 +8,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=1G
 #SBATCH --time=00:01:00
-#SBATCH --output=slurm-%x-%J.out 
+#SBATCH --output=slurm.out 
 
 # Run the program
-srun ./build/heat_mpi
+cc cartesian-grid.c -o main
+srun ./main

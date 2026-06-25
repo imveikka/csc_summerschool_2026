@@ -101,6 +101,7 @@ void exchange_evolve(Field& curr, Field& prev, const ParallelData parallel,
     // Compute boundaries
     const int I[4] = {1, 1, curr.nx, curr.nx};
     const int J[4] = {1, curr.ny, 1, curr.ny};
+
     for (int ix = 0; ix < 4; ix++) {
         int i = I[ix];
         for (int j = 1; j < curr.ny + 1; j++) {
@@ -109,8 +110,6 @@ void exchange_evolve(Field& curr, Field& prev, const ParallelData parallel,
     	       ( prev(i, j + 1) - 2.0 * prev(i, j) + prev(i, j - 1) ) * inv_dy2
                    );
         }
-    }
-    for (int ix = 0; ix < 4; ix++) {
         int j = J[ix];
         for (int i = 1; i < curr.nx + 1; i++) {
                 curr(i, j) = prev(i, j) + a * dt * (
