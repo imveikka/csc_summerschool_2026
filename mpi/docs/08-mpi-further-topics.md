@@ -22,7 +22,7 @@ Menti!
 - Additional communication modes
   - Persistent communication
   - One-sided communication
-- Newer features in MPI
+- Recent additions to the MPI standard
 
 # Process topologies {.section}
 
@@ -95,13 +95,14 @@ call mpi_type_free(rowtype, ierr)
 - Certain algorithms can be easier to implement with one-sided communication
 - Can potentially reduce synchronization overheads and provide better performance especially on recent hardware
 
-# Newer features in MPI {.section}
+
+# Recent additions to the MPI standard {.section}
 
 # Evolution of the MPI standard
 
 - MPI is an evolving standard:
   - Version 5.0 in 2025, 4.0 in 2021, 3.0 in 2015
-- New versions bring new fancy(?) features
+- New versions bring new features
 - However, HPC systems usually lag behind and may provide older implementations only
   - LUMI default MPI follows version 3.1, but there is an unofficial installation that supports 4.1
 
@@ -125,6 +126,6 @@ call mpi_type_free(rowtype, ierr)
 # Summary
 
 - MPI is large standard and it has hundreds of procedures for different purposes
-- New features get added to MPI from time to time
+- MPI is an evolving standard and new features are introduced from time to time
   - Use with care: HPC systems may only provide older implementations
 - See our extra material (slides, exercises)
