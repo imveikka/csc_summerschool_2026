@@ -1,0 +1,48 @@
+Sender: 0. Sent elements: 10000000. Tag: 1. Receiver: 1
+Receiver: 0. first element -1
+Sender: 1. Sent elements: 10000000. Tag: 2. Receiver: 2
+Receiver: 1. first element 0
+Sender: 2. Sent elements: 10000000. Tag: 3. Receiver: 3
+Receiver: 2. first element 1
+Sender: 3. Sent elements: 10000000. Tag: 4. Receiver: 4
+Receiver: 3. first element 2
+Sender: 4. Sent elements: 10000000. Tag: 5. Receiver: 5
+Receiver: 4. first element 3
+Sender: 5. Sent elements: 10000000. Tag: 6. Receiver: 6
+Receiver: 5. first element 4
+Sender: 6. Sent elements: 10000000. Tag: 7. Receiver: 7
+Receiver: 6. first element 5
+Sender: 7. Sent elements: 10000000. Tag: 8. Receiver: 8
+Receiver: 7. first element 6
+Sender: 8. Sent elements: 10000000. Tag: 9. Receiver: 9
+Receiver: 8. first element 7
+Sender: 9. Sent elements: 10000000. Tag: 10. Receiver: 10
+Receiver: 9. first element 8
+Sender: 10. Sent elements: 10000000. Tag: 11. Receiver: 11
+Receiver: 10. first element 9
+Sender: 11. Sent elements: 10000000. Tag: 12. Receiver: 12
+Receiver: 11. first element 10
+Sender: 12. Sent elements: 10000000. Tag: 13. Receiver: 13
+Receiver: 12. first element 11
+Sender: 13. Sent elements: 10000000. Tag: 14. Receiver: 14
+Receiver: 13. first element 12
+Sender: 14. Sent elements: 10000000. Tag: 15. Receiver: 15
+Receiver: 14. first element 13
+Sender: 15. Sent elements: 10000000. Tag: 16. Receiver: -1
+Receiver: 15. first element 14
+Time elapsed in rank  0:  0.040
+Time elapsed in rank  1:  0.041
+Time elapsed in rank  2:  0.041
+Time elapsed in rank  3:  0.041
+Time elapsed in rank  4:  0.041
+Time elapsed in rank  5:  0.041
+Time elapsed in rank  6:  0.041
+Time elapsed in rank  7:  0.045
+Time elapsed in rank  8:  0.045
+Time elapsed in rank  9:  0.041
+Time elapsed in rank 10:  0.041
+Time elapsed in rank 11:  0.041
+Time elapsed in rank 12:  0.041
+Time elapsed in rank 13:  0.041
+Time elapsed in rank 14:  0.041
+Time elapsed in rank 15:  0.041

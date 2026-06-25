@@ -28,18 +28,40 @@ int main(int argc, char *argv[])
         MPI_Abort(MPI_COMM_WORLD, -1);
     }
 
+
     /* Initialize message buffers */
     init_buffers(sendbuf, recvbuf);
-
     /* Print data that will be sent */
     print_buffers(sendbuf);
-
-    /* TODO: use a single collective communication call
-     *       (and maybe prepare some parameters for the call)
-     */
-
     /* Print data that was received */
-    /* TODO: use correct buffer */
+    print_buffers(recvbuf);
+
+    if (rank == 0) printf("Case 1:\n");
+    if (rank == 0) recvbuf = sendbuf;
+    MPI_Bcast(recvbuf.data(), recvbuf.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    print_buffers(recvbuf);
+
+    if (rank == 0) printf("Case 2:\n");
+    init_buffers(sendbuf, recvbuf);
+    MPI_Scatter(sendbuf.data(), sendbuf.size() / ntasks, MPI_INT,
+                recvbuf.data(), recvbuf.size() / ntasks, MPI_INT,
+                0, MPI_COMM_WORLD); 
+    print_buffers(recvbuf);
+
+    if (rank == 0) printf("Case 3:\n");
+    init_buffers(sendbuf, recvbuf);
+    int counts[NTASKS] = {1, 1, 2, 4};
+    int displs[NTASKS] = {0, 1, 2, 4};
+    MPI_Gatherv(sendbuf.data(), counts[rank], MPI_INT,
+                recvbuf.data(), counts, displs, MPI_INT,
+                1, MPI_COMM_WORLD);
+    print_buffers(recvbuf);
+
+    if (rank == 0) printf("Case 4:\n");
+    init_buffers(sendbuf, recvbuf);
+    MPI_Alltoall(sendbuf.data(), sendbuf.size() / ntasks, MPI_INT,
+                 recvbuf.data(), recvbuf.size() / ntasks, MPI_INT,
+                 MPI_COMM_WORLD);
     print_buffers(recvbuf);
 
     MPI_Finalize();

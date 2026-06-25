@@ -36,39 +36,44 @@ int main(int argc, char *argv[]) {
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
 
-    // Case A
-    // MPI_Send(message.data(), message.size(), MPI_INT, destination,
-    //          rank + 1, MPI_COMM_WORLD); 
 
+    // Method 1: Isend only
+    // MPI_Request request;
+    // MPI_Isend(message.data(), message.size(), MPI_INT, destination,
+    //          rank + 1, MPI_COMM_WORLD, &request); 
+    // MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
+    //          rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // printf("Sender: %d. Sent elements: %d. Tag: %d. Receiver: %d\n",
+    //        rank, numElements, rank + 1, destination
+    // );
+    // MPI_Wait(&request, MPI_STATUS_IGNORE);
+    // printf("Receiver: %d. first element %d\n", rank, receiveBuffer[0]);
+
+
+    // Method 2: Irecv only
+    MPI_Request request;
+    MPI_Irecv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
+             rank, MPI_COMM_WORLD, &request);
+    MPI_Send(message.data(), message.size(), MPI_INT, destination,
+             rank + 1, MPI_COMM_WORLD); 
     printf("Sender: %d. Sent elements: %d. Tag: %d. Receiver: %d\n",
            rank, numElements, rank + 1, destination
     );
-
-    // Case A
-    // MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
-    //          rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-    // Case B
-    // MPI_Sendrecv(message.data(), message.size(), MPI_INT, destination, rank + 1,
-    //              receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source, rank,
-    //              MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-    // Case C
-    if (rank % 2 == 0) {
-        MPI_Send(message.data(), message.size(), MPI_INT, destination,
-                 rank + 1, MPI_COMM_WORLD); 
-        MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
-                 rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    }
-    else {
-        MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
-                 rank, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Send(message.data(), message.size(), MPI_INT, destination,
-                 rank + 1, MPI_COMM_WORLD); 
-    }
-
-
+    MPI_Wait(&request, MPI_STATUS_IGNORE);
     printf("Receiver: %d. first element %d\n", rank, receiveBuffer[0]);
+
+
+    // Method 3: All
+    // MPI_Request requests[2];
+    // MPI_Irecv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT, source,
+    //          rank, MPI_COMM_WORLD, requests + 1);
+    // MPI_Isend(message.data(), message.size(), MPI_INT, destination,
+    //          rank + 1, MPI_COMM_WORLD, requests); 
+    // printf("Sender: %d. Sent elements: %d. Tag: %d. Receiver: %d\n",
+    //        rank, numElements, rank + 1, destination
+    // );
+    // MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+    // printf("Receiver: %d. first element %d\n", rank, receiveBuffer[0]);
 
 
     // Finalize measuring the time and print it out

@@ -6,7 +6,9 @@
 #include <cmath>
 #include <mpi.h>
 
-constexpr int n = 840;
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+constexpr int n = 1024;
 
 int main(int argc, char** argv)
 {
@@ -16,8 +18,9 @@ int main(int argc, char** argv)
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  	int istart = (n / size) * rank + 1;
-  	int istop = (n / size) * (rank + 1);
+    int extra = n % size; 
+  	int istart = (n / size) * rank + 1 + MIN(rank, extra);
+  	int istop = (n / size) * (rank + 1) + MIN(rank + 1, extra);
 	
 	printf("Computing approximation to pi with from i=%d to %d.\n", istart, istop);
 
@@ -35,6 +38,7 @@ int main(int argc, char** argv)
 		double other;
 		for (int i = 1; i < size; i++) {
 			MPI_Recv(&other, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			// MPI_Recv(&other, 1, MPI_DOUBLE, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			pi += other;
 		}
   		printf("Approximate pi=%18.16f (exact pi=%10.8f).\n", pi, M_PI);

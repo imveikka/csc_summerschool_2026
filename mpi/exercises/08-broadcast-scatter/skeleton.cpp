@@ -15,7 +15,7 @@ void print_buffer(std::vector<int> &buffer);
 int main(int argc, char *argv[])
 {
     int size, rank, buf_size=12;
-    std::vector<int> buf(buf_size);
+    std::vector<int> buf(buf_size), sbuf(buf_size), rbuf(buf_size);
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 
     /* Initialize message buffer */
     init_buffer(buf);
+    init_buffer(sbuf);
 
     /* Print data that will be sent */
     print_buffer(buf);
@@ -32,7 +33,37 @@ int main(int argc, char *argv[])
     double t0 = MPI_Wtime();
 
     /* Send everywhere */
-    // TODO: Implement the broadcast of the array buf
+
+    // Manual b-cast:
+    // if (rank == 0) {
+    //     for (int i = 1; i < size; i++) {
+    //         MPI_Send(buf.data(), buf.size(), MPI_INT, i, 0, MPI_COMM_WORLD);
+    //     }
+    // }
+    // else {
+    //     MPI_Recv(buf.data(), buf.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // }
+
+        
+    // Actual b-cast:
+    // MPI_Bcast(buf.data(), buf.size(), MPI_INT, 0, MPI_COMM_WORLD);
+
+
+    // Manual scatter:
+    // if (rank == 0) {
+    //     for (int i = 1; i < size; i++) {
+    //         MPI_Send(buf.data() + (buf_size / size) * i, buf_size / size, MPI_INT, i, 0, MPI_COMM_WORLD);
+    //     }
+    // }
+    // else {
+    //     MPI_Recv(buf.data(), buf_size / size, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // }
+
+
+    // Actual scatter:
+    MPI_Scatter(sbuf.data(), buf_size / size, MPI_INT, rbuf.data(), buf_size / size, MPI_INT, 0, MPI_COMM_WORLD);
+    buf = rbuf;
+
 
     /* End timing */
     double t1 = MPI_Wtime();

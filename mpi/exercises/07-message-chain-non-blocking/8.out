@@ -1,0 +1,24 @@
+Sender: 0. Sent elements: 10000000. Tag: 1. Receiver: 1
+Receiver: 0. first element -1
+Sender: 1. Sent elements: 10000000. Tag: 2. Receiver: 2
+Receiver: 1. first element 0
+Sender: 2. Sent elements: 10000000. Tag: 3. Receiver: 3
+Receiver: 2. first element 1
+Sender: 3. Sent elements: 10000000. Tag: 4. Receiver: 4
+Receiver: 3. first element 2
+Sender: 4. Sent elements: 10000000. Tag: 5. Receiver: 5
+Receiver: 4. first element 3
+Sender: 5. Sent elements: 10000000. Tag: 6. Receiver: 6
+Receiver: 5. first element 4
+Sender: 6. Sent elements: 10000000. Tag: 7. Receiver: 7
+Receiver: 6. first element 5
+Sender: 7. Sent elements: 10000000. Tag: 8. Receiver: -1
+Receiver: 7. first element 6
+Time elapsed in rank  0:  0.040
+Time elapsed in rank  1:  0.041
+Time elapsed in rank  2:  0.041
+Time elapsed in rank  3:  0.039
+Time elapsed in rank  4:  0.039
+Time elapsed in rank  5:  0.039
+Time elapsed in rank  6:  0.039
+Time elapsed in rank  7:  0.039

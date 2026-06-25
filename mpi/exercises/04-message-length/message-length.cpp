@@ -46,8 +46,6 @@ int main(int argc, char *argv[]) {
 
     if (rank == 0) {
 
-        int messageLength = 1;
-        std::vector<int> receiveBuffer(messageLength);
 
         // TODO: receive the full message sent from rank 1.
         // Use MPI_Probe and MPI_Get_count to figure out the number of integers in the message.
@@ -58,14 +56,31 @@ int main(int argc, char *argv[]) {
 
         // ... your code here ...
 
-        // Receive the message. Will error with MPI_ERR_TRUNCATE if the buffer is too small for the incoming message
+        // APPROACH 1
+        int messageLength;
+        MPI_Status status;
+        MPI_Probe(1, tag, MPI_COMM_WORLD, &status);
+        MPI_Get_count(&status, MPI_INT, &messageLength);
+        std::vector<int> receiveBuffer(messageLength);
         MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT,
             sourceRank, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE
         );
 
+        // APPROACH 2
+        // int messageLength = 10;
+        // std::vector<int> receiveBuffer(messageLength);
+        // MPI_Status status;
+        // MPI_Recv(receiveBuffer.data(), receiveBuffer.size(), MPI_INT,
+        //     sourceRank, tag, MPI_COMM_WORLD, &status
+        // );
+        // MPI_Get_count(&status, MPI_INT, &messageLength);
+
+        // Receive the message. Will error with MPI_ERR_TRUNCATE if the buffer is too small for the incoming message
+
         printf("Rank 0: Received %d integers from rank 1.\n", messageLength);
         // Print the received numbers
-        for (int i = 0; i < receiveBuffer.size(); i++ ) {
+        // for (int i = 0; i < receiveBuffer.size(); i++ ) {
+        for (int i = 0; i < messageLength; i++ ) {
             printf("receiveBuffer[%d] : %d\n", i, receiveBuffer[i]);
         }
 
