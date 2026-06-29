@@ -236,7 +236,7 @@ MPI_Gatherv(`sendbuf`{.input}, `sendcount`{.input}, `sendtype`{.input}, `recvbuf
 
 - Example: Gathering different number of elements from each process into process `#`2
 
-![](img/gatherv_data.png){.center width=100%}
+![](img/gatherv_data.svg){.center width=100%}
 
 # All gather
 
