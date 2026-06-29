@@ -66,7 +66,7 @@ lang:   en
 
 # ML Parameters vs FLOP count
 
-- **No. Parameters** are static — they define the model size
+- **Number of parameters** is static — they define the model size
 - **FLOP count** depends on data:
     - Input size
     - Number of filters, etc

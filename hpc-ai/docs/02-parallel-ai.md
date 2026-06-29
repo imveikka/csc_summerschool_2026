@@ -13,10 +13,10 @@ lang:   en
   - Heavy computations
   - Large Model
 - That's why we might need use multiple GPUs to train
-  - GPUs could be accross multiple nodes
+  - GPUs could be across multiple nodes
 - Multi-GPU or Multi-Node training has overhead
   - Communication costs
-  - Distributation of the data
+  - Distribution of the data
   - Underutilization
 
 
