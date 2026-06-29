@@ -1,6 +1,10 @@
 ---
+# SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi> and Aalto University
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 title:  Introduction to AI
-event:  CSC Summer School in High-Performance Computing 2025
+event:  CSC Summer School in High-Performance Computing 2026
 lang:   en
 ---
 
@@ -9,7 +13,7 @@ lang:   en
 <div class="column"  style="width:99%; text-align: center;">
   ![](img/AI_ML_DL_differences.png){width=41%}
   
-  <small>From [Introduction to Deep Learning](AI_ML_DL_differences.png) ENCCS training, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)</small>
+  <small>From [Introduction to Deep Learning](https://enccs.github.io/deep-learning-intro/) ENCCS training, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)</small>
 </div>
 
 # Machine Learning
@@ -34,7 +38,7 @@ lang:   en
 <div class="column"  style="width:99%; text-align: center;">
   ![](img/Under_Over_fitting.png){width=64%}
 
-  <small>From Wikimedia Commons, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)</small>
+  <small>Adapted from [Wikimedia Commons](https://en.wikipedia.org/wiki/Overfitting), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)</small>
 </div>
 
 # Artificial Neurons
