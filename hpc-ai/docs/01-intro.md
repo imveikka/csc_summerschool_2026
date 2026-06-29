@@ -1,5 +1,5 @@
 ---
-# SPDX-FileCopyrightText: 2026 CSC - IT Center for Science Ltd. <www.csc.fi> and Aalto University
+# SPDX-FileCopyrightText: 2026 Aalto University and CSC - IT Center for Science Ltd. <www.csc.fi>
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
