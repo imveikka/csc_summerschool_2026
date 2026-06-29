@@ -305,9 +305,6 @@ srun -n 1 my_code --version > job_version_$SLURM_JOBID
     - What is abnormal
 
 
-# Quiz?
-
-
 # Conclusions 
 - Know and make use of the access paths available to obtain HPC resources
 - Familiarise yourself well with the system you are running on
