@@ -75,15 +75,16 @@ lang:   en
 
 # VRAM Usage Breakdown
 
-| Component            | Description                                  |
-|---------------------|----------------------------------------------|
-| Model Parameters     | Static memory for weights                    |
-| Gradients            | Stored during backpropagation                |
-| Optimizer States     | e.g., momentum/Adam stats                    |
-| Activations          | Largest source — intermediate tensors        |
-| Framework Overhead   | Memory allocator, workspace, caching         |
+| Component          | Description                                  |
+|--------------------|----------------------------------------------|
+| Model Parameters   | Static memory for weights                    |
+| Gradients          | Stored during backpropagation                |
+| Optimizer States   | e.g., momentum/Adam states                   |
+| Activations        | Intermediate tensors, varies with batch size |
+| Framework Overhead | Memory allocator, workspace, caching         |
 
 - Peak VRAM usage is dominated by activations in deep CNNs.
+- For LLMs it's the model size (affecting params, gradients, opt. states)
 
 # Example: ResNet-152 with CIFAR-100
 
@@ -106,14 +107,14 @@ total_params = sum(p.numel() for p in model.parameters())
 
 # VRAM Estimate: ResNet-152 + CIFAR-100 (224x224)
 
-| Component          | FP32 (approx) |
-|-------------------|---------------|
-| Parameters         | 240 MB        |
-| Adam  Optimizer    | 480 MB        |
-| Gradients          | 240 MB        |
-| Activations*       | ~180 MB       |
-| Overhead           | ~1 GB         |
-| **Total**          | ~2 GB         |
+| Component       | FP32 (approx)           |
+|-----------------|-------------------------|
+| Parameters      | 240 MB                  |
+| Adam  Optimizer | 480 MB                  |
+| Gradients       | 240 MB                  |
+| Activations*    | ~180 MB (for one image) |
+| Overhead        | ~1 GB                   |
+| **Total**       | ~2 GB                   |
 
 - For `batch_size=128` VRAM is ~24 GB
 
