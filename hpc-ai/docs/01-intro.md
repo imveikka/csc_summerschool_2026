@@ -21,7 +21,7 @@ lang:   en
 - learn patterns from data to make predictions
 
 <div class="column"  style="width:99%; text-align: center;">
-  ![](img/ML_types.png){width=61%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/ML_types.png){width=61%}
   
   <small>**The unreasonable effectiveness of data in machine learning!**</small>
 </div>
@@ -44,7 +44,7 @@ lang:   en
 # Artificial Neurons
 
 <div class="column"  style="width:57%">
-  ![](img/Neuron.png){width=125%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/Neuron.png){width=125%}
 </div>
 <div class="column"  style="width:39%; text-align: center;">
   ![](img/activation_functions.png){width=65%}
@@ -60,7 +60,7 @@ lang:   en
 #  Neural Networks
 
 <div class="column"  style="width:58%">
-  ![](img/NNetwork.png){width=90%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/NNetwork.png){width=90%}
 </div>
 
 <div class="column"  style="width:40%">
@@ -95,7 +95,7 @@ class SimpleMLP(nn.Module):
 </div>
 
 <div class="column"  style="width:23%; text-align: center;">
-![](img/forward_pass.png){width=39%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/forward_pass.png){width=39%}
 </div>
 
 Final result is given by softmax operation: 

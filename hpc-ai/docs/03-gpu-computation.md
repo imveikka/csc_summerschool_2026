@@ -20,7 +20,7 @@ lang:   en
 :::
 ::: {.column width="40%"}
 <center>
-![](img/amd-mi250.avif){.center width=60%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/amd-mi250.avif){.center width=60%}
 
 <small>Single AMD MI250X GPU</small>
 </center>
@@ -51,7 +51,7 @@ lang:   en
 :::::: {.columns}
 ::: {.column width="50%"}
 <center>
-![](img/maf-flops.png){.center width=80%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/maf-flops.png){.center width=80%}
 <small>Picture from [AMD](https://rocm.blogs.amd.com/software-tools-optimization/Understanding_Peak_and_Max-Achievable_FLOPS/README.html)</small>
 </center>
 

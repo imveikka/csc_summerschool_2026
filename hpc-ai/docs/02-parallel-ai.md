@@ -22,7 +22,7 @@ lang:   en
 
 # Multi-GPU performance
 <div class="column"  style="width:100%; text-align: center;">
-  ![](img/GPU_overhead.png){width=40%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/GPU_overhead.png){width=40%}
 </div>
 - ResNet152 with CIFAR100 multi-gpu performance
 
@@ -31,7 +31,7 @@ lang:   en
 
 :::::: {.columns}
 ::: {.column width="50%"}
-![](img/single_gpu.png){.center width=30%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/single_gpu.png){.center width=30%}
 :::
 ::: {.column width="50%"}
 - Entire model & batch data on one GPU
@@ -52,7 +52,7 @@ lang:   en
 train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 ```
 
-![](img/data_process.png){.center width=60%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/data_process.png){.center width=60%}
 
 
 # Multi-GPU Techniques
@@ -60,11 +60,11 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 :::::: {.columns}
 ::: {.column width="50%"}
 **Data Parallelism**
-![](img/data_parallelism_general.png){.center width=70%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/data_parallelism_general.png){.center width=70%}
 :::
 ::: {.column width="50%"}
 **Model Parallelism**
-![](img/model_parallelism_general.png){.center width=45%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/model_parallelism_general.png){.center width=45%}
 :::
 ::::::
 
@@ -72,7 +72,7 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 
 :::::: {.columns}
 ::: {.column width="40%"}
-![](img/data_parallelism.png){.center width=70%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/data_parallelism.png){.center width=70%}
 :::
 ::: {.column width="30%"}
 - <small>Copy model to each GPU</small>
@@ -95,18 +95,11 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
  
 
 # Naive PyTorch Data Parallelism (DP)
-  ![](img/pytorch_dp_details.png){width=75%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/pytorch_dp_details.png){width=75%}
 
 
 # PyTorch Distributed Data Parallelism (DDP)
-  ![](img/pytorch_ddp_details.png){width=75%}
-
-
-<!-- # DDP AllReduce overlap -->
-<!-- Without overlap: -->
-<!--   ![](img/ddp_non_interleaved.png){.center width=60%} -->
-<!-- With overlap:  -->
-<!--   ![](img/ddp_overlap.png){.center width=60%} -->
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/pytorch_ddp_details.png){width=75%}
 
 
 # DDP vs DP
@@ -123,7 +116,7 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 
 :::::: {.columns}
 ::: {.column width="40%"}
-![](img/pipeline_parallelism.png){.center width=70%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/pipeline_parallelism.png){.center width=70%}
 :::
 ::: {.column width="30%"}
 - <small>Vertical Parallelism</small>
@@ -148,7 +141,7 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 
 # Bubble issue and GPipe
 <div class="column"  style="width:80%; text-align: center;">
-  ![](img/mp_vs_gpipe.png){width=80%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/mp_vs_gpipe.png){width=80%}
   <br><small>Picture from [GPipe Paper, arXiv:1811.06965](https://arxiv.org/abs/1811.06965)</small>
 </div>
 - GPipe divides the data to micro-batch to reduce the bubble issue.
@@ -158,7 +151,7 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 
 :::::: {.columns}
 ::: {.column width="60%"}
-![](img/tensor_parallelism.png){.center width=70%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/tensor_parallelism.png){.center width=70%}
 :::
 ::: {.column width="30%"}
 - <small>Horizontal Parallelism</small>
@@ -184,11 +177,11 @@ train_loader = torch.utils.data.DataLoader(data, ..., num_workers=N)
 
 # How Tensor Parallelism works?
 
-![](img/tp_example.png){width=60%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/tp_example.png){width=60%}
 
 # Mix and Match: DP + PP!
 <center>
-![](img/dp_pp.png){.center width=70%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/dp_pp.png){.center width=70%}
 This is from [DeepSpeed](https://www.microsoft.com/en-us/research/blog/zero-deepspeed-new-system-optimizations-enable-training-models-with-over-100-billion-parameters/)
 </center>
 
@@ -200,7 +193,7 @@ This is from [DeepSpeed](https://www.microsoft.com/en-us/research/blog/zero-deep
 
 :::::: {.columns}
 ::: {.column width="45%"}
-![](img/parallelism_3d.png){.center width=100%}
+![](https://a3s.fi/summerschool/assets/images/hpc-ai/parallelism_3d.png){.center width=100%}
 :::
 ::: {.column width="55%"}
 - In real world: Data Parallel + Tensor Parallel + Pipeline Parallel are combined
@@ -219,7 +212,7 @@ This is from [DeepSpeed](https://www.microsoft.com/en-us/research/blog/zero-deep
 
 # ZeRO
 <div class="column"  style="width:100%; text-align: center;">
-  ![](img/parallelism_zero.png){width=100%}
+  ![](https://a3s.fi/summerschool/assets/images/hpc-ai/parallelism_zero.png){width=100%}
 </div>
 
 
