@@ -126,11 +126,11 @@ git push
 
 <div class=column>
 
-- Pull/merge request
+- Pull/merge request (GitHub/GitLab feature)
     - Proposed change
     - Place for review and discussion
     - Good place to run automatic checks
-- Issue
+- Issue (GitHub/GitLab feature)
     - Bug, feature idea, documentation gap, performance note
     - Should include enough information to reproduce the problem
 
@@ -287,6 +287,9 @@ In a training repository:
 
 </div>
 
+# Diátaxis framework
+
+![](images/diataxis_axes-of-needs.png)
 
 # Documentation for HPC software
 <div class=column>
