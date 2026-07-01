@@ -22,9 +22,13 @@ int main(int argc, char* argv[])
     // Calculate sum
     double total = 0;
     #pragma omp parallel
-    #pragma omp for
-    for (int i = 0; i < n; i++) {
-        total += std::sin(static_cast<double>(i));
+    {
+        double thread_total = 0;
+        #pragma omp for
+        for (int i = 0; i < n; i++)
+            thread_total += std::sin(static_cast<double>(i)); 
+        #pragma omp atomic
+        total += thread_total;
     }
 
     // End timing

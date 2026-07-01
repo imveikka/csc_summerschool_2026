@@ -40,18 +40,32 @@ int main(int argc, char* argv[])
     std::uniform_real_distribution<double> dis(0.0, 1.0);
 
     // Print a few random values for debugging
-    printf("Thread %3d: A few random values: %.4f %.4f %.4f\n",
-           0, dis(rng), dis(rng), dis(rng));
+    //#pragma omp parallel //firstprivate(dis, rng)
+    {
+        double a, b, c;
+        #pragma omp critical
+        {
+            a = dis(rng);
+            b = dis(rng);
+            c = dis(rng);
+        }
+        printf("Thread %3d: A few random values: %.4f %.4f %.4f\n",
+               omp_get_thread_num(), a, b, c);
+    }
 
     // Draw N random lines and calculate total distance
     double total_distance = 0.0;
+    #pragma omp parallel for reduction(+:total_distance)
     for (int i = 0; i < N; ++i) {
         // Get two random points
-        double x1 = dis(rng);
-        double y1 = dis(rng);
-        double x2 = dis(rng);
-        double y2 = dis(rng);
-
+        double x1, y1, x2, y2;
+        #pragma omp critical
+        {
+            x1 = dis(rng);
+            y1 = dis(rng);
+            x2 = dis(rng);
+            y2 = dis(rng);
+        }
         // Calculate distance between the points
         double dx = x1 - x2;
         double dy = y1 - y2;

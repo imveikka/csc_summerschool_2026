@@ -10,19 +10,29 @@
 #include "../error_checking.hpp"
 
 // Copy all elements using threads in a 2D grid
-__global__ void copy2d(/*TODO: add arguments*/) {
+__global__ void copy2d(double *dst, double *src, const int rows, const int cols) {
     // TODO: compute row and col using
     // - threadIdx.x, threadIdx.y
     // - blockIdx.x, blockIdx.y
     // - blockDim.x, blockDim.y
 
+    const int tid_x = threadIdx.x + blockIdx.x * blockDim.x;
+    const int stride_x = blockDim.x * gridDim.x;
+    const int tid_y = threadIdx.y + blockIdx.y * blockDim.y;
+    const int stride_y = blockDim.y * gridDim.y;
+
     // TODO: Make sure there's no out-of-bounds access
     // row must be < number of rows
     // col must be < number of columns
 
+    for (int row = tid_x; row < rows; row += stride_x) {
+        for (int col = tid_y; col < cols; col += stride_y) {
+            const size_t index = row * cols + col;
+            dst[index] = src[index];
+        }
+    }
+
     // We're computing 1D index from a 2D index and copying from src to dst
-    const size_t index = row * num_cols + col;
-    dst[index] = src[index];
 }
 
 int main() {
@@ -39,18 +49,26 @@ int main() {
     }
 
     // TODO: Allocate + copy initial values to GPU
+    double *x_g = nullptr;
+    HIP_ERRCHK(hipMalloc(&x_g, num_bytes));
+    double *y_g = nullptr;
+    HIP_ERRCHK(hipMalloc(&y_g, num_bytes));
+    HIP_ERRCHK(hipMemcpy(x_g, static_cast<void *>(x.data()), num_bytes, hipMemcpyDefault));
 
     // TODO: Define grid dimensions
     // Use dim3 structure for threads and blocks
-    dim3 threads;
-    dim3 blocks;
+    dim3 threads(128, 1, 1);
+    dim3 blocks(128, 1, 1);
 
     // TODO: launch the device kernel
-    LAUNCH_KERNEL(copy2d, blocks, threads, 0, 0, the_arguments_for_the_kernel);
+    LAUNCH_KERNEL(copy2d, blocks, threads, 0, 0, y_g, x_g, (int) num_rows, (int) num_cols);
 
     // TODO: Copy results back to the CPU vector y
+    HIP_ERRCHK(hipMemcpy(static_cast<void *>(y.data()), y_g, num_bytes, hipMemcpyDefault));
 
     // TODO: Free device memory
+    HIP_ERRCHK(hipFree(x_g));
+    HIP_ERRCHK(hipFree(y_g));
 
     // Check result of computation on the GPU
     double error = 0.0;

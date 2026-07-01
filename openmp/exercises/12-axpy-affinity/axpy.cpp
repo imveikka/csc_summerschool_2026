@@ -11,17 +11,22 @@
 
 int main(int argc, char* argv[]) {
     // Array size
-    int n = 102400;
+    int n = (1<<22);
     if (argc > 1) {
         n = std::stoi(argv[1]);
     }
     printf("Array size n = %d\n", n);
+
+    #pragma omp parallel
+    #pragma omp single
+    printf("Using %d threads.\n", omp_get_num_threads());
 
     double alpha;
     std::vector<double> x(n), y(n);
 
     // Initialization
     alpha = 3.0;
+    #pragma omp parallel for
     for (int i = 0; i < n; i++) {
         double frac = 1.0 / ((double) (n - 1));
         x[i] = i * frac;

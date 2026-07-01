@@ -59,6 +59,27 @@ void sweepGPU(double *phi, const double *phiPrev, const double *source,
 
 // GPU kernel
 __global__ 
+void sweepGPU_interior(double *phi, const double *phiPrev, const double *source, 
+              double h2, int Nrows, int Ncols)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int index = i + j*Ncols;
+    int i1, i2, i3, i4;
+
+    i1 = (i-1) +   j   * Ncols;
+    i2 = (i+1) +   j   * Ncols;
+    i3 =   i   + (j-1) * Ncols;
+    i4 =   i   + (j+1) * Ncols;
+
+    if (i > 0 && j > 1 && i < Ncols-1 && j < Nrows-2)
+        phi[index] = 0.25 * (phiPrev[i1] + phiPrev[i2] + 
+                             phiPrev[i3] + phiPrev[i4] - 
+                             h2 * source[index]);
+}
+
+// GPU kernel
+__global__ 
 void sweepGPU_boundary(double *phi, const double *phiPrev, const double *source, 
               double h2, int Nrows, int Ncols)
 {
@@ -245,6 +266,8 @@ int main(int argc, char** argv)
 
     dim3 dimBlock(blocksize, blocksize); 
     dim3 dimGrid((Ncols + blocksize - 1) / blocksize, (Nrows + blocksize - 1) / blocksize); 
+    int blocks_b = blocksize * blocksize;
+    int grids_b = (Ncols + blocks_b - 1) / blocks_b;
 
     //do sweeps until diff under tolerance
     diff = tolerance * 2;
@@ -252,7 +275,14 @@ int main(int argc, char** argv)
 
     t1 = MPI_Wtime();
 
+    hipEvent_t event_interior;
+    HIP_CHECK( hipEventCreate(&event_interior) );
+
     while (diff > tolerance && iterations < MAX_ITERATIONS) {
+        
+        sweepGPU_interior<<<dimGrid, dimBlock>>>
+            (phiPrev_d, phi_d, source_d, h*h, Nrows, Ncols); 
+        HIP_CHECK( hipEventRecord(event_interior) );
 
         roctxRangePush("halo_exchange");
         MPI_Sendrecv(&phi_d[Ncols], Ncols, MPI_DOUBLE, nghbrs[0], 0,
@@ -262,8 +292,25 @@ int main(int argc, char** argv)
                      &phi_d[0], Ncols, MPI_DOUBLE, nghbrs[0], 0,
                      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         roctxRangePop();
-        sweepGPU<<<dimGrid, dimBlock>>>(phiPrev_d, phi_d, source_d, h*h, Nrows, Ncols); 
-        HIP_CHECK( hipDeviceSynchronize() );
+
+        //sweepGPU<<<dimGrid, dimBlock>>>
+        //    (phiPrev_d, phi_d, source_d, h*h, Nrows, Ncols); 
+        //HIP_CHECK( hipDeviceSynchronize() );
+        //HIP_CHECK( hipStreamSynchronize(0) );
+        HIP_CHECK( hipEventSynchronize(event_interior) );
+
+        sweepGPU_boundary<<<grids_b, blocks_b>>>
+            (phiPrev_d, phi_d, source_d, h*h, Nrows, Ncols); 
+
+
+        //double *temp = phiPrev_d;
+        //phiPrev_d = phi_d;
+        //phi_d = temp;
+
+
+        sweepGPU_interior<<<dimGrid, dimBlock>>>
+            (phi_d, phiPrev_d, source_d, h*h, Nrows, Ncols); 
+        HIP_CHECK( hipEventRecord(event_interior) );
 
         roctxRangePush("halo_exchange");
         MPI_Sendrecv(&phiPrev_d[Ncols], Ncols, MPI_DOUBLE, nghbrs[0], 0,
@@ -273,8 +320,18 @@ int main(int argc, char** argv)
                      &phiPrev_d[0], Ncols, MPI_DOUBLE, nghbrs[0], 0,
                      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         roctxRangePop();
-        sweepGPU<<<dimGrid, dimBlock>>>(phi_d, phiPrev_d, source_d, h*h, Nrows, Ncols); 
-        HIP_CHECK( hipDeviceSynchronize() );
+
+        //sweepGPU<<<dimGrid, dimBlock>>>
+        //    (phi_d, phiPrev_d, source_d, h*h, Nrows, Ncols); 
+
+        //HIP_CHECK( hipDeviceSynchronize() );
+        //HIP_CHECK( hipStreamSynchronize(0) );
+        HIP_CHECK( hipEventSynchronize(event_interior) );
+
+        sweepGPU_boundary<<<grids_b, blocks_b>>>
+            (phi_d, phiPrev_d, source_d, h*h, Nrows, Ncols); 
+
+
         CHECK_ERROR_MSG("Jacobi kernels");
         iterations += 2;
         

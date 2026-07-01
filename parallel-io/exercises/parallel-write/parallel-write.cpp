@@ -27,12 +27,43 @@ void single_writer(const std::vector<int>& localData, const char* filename) {
 
     // You can assume that 'localData' has same length in all MPI processes:
     const size_t numElementsPerRank = localData.size();
+    int rank, size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    
+    std::vector<int> allData(numElementsPerRank * size);
+
+    MPI_Gather(localData.data(), localData.size(), MPI_INT,
+               allData.data(), localData.size(), MPI_INT,
+               0, MPI_COMM_WORLD);
+
+    if (rank == 0) {
+        FILE *buf;
+        buf = fopen(filename, "wb");
+        fwrite(allData.data(), sizeof(int), allData.size(), buf);
+        fclose(buf);
+    }
 
 }
 
 void collective_write(const std::vector<int>& localData, const char* filename) {
     // TODO: Like single_writer(), but implement a parallel write using MPI_File_write_at_all()
 
+    const size_t numElementsPerRank = localData.size();
+    int rank, size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    MPI_File file;
+    MPI_File_open(MPI_COMM_WORLD, filename,
+                  MPI_MODE_CREATE | MPI_MODE_WRONLY,
+                  MPI_INFO_NULL, &file);
+
+    MPI_Offset offset = (MPI_Offset) (rank * numElementsPerRank * sizeof(int));
+    MPI_File_write_at_all(file, offset, localData.data(), numElementsPerRank,
+                          MPI_INT, MPI_STATUS_IGNORE);
+
+    MPI_File_close(&file);
 }
 
 int main(int argc, char **argv) {
@@ -83,8 +114,6 @@ int main(int argc, char **argv) {
         printf("[%s] file contents:\n", filename.c_str());
         debug_read_file(filename.c_str());
     }
-
-    //~
 
     MPI_Finalize();
     return 0;

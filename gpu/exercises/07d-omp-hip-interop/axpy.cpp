@@ -43,7 +43,14 @@ int main(int argc, char* argv[]) {
     // Calculate axpy
     // TODO: This is broken. We need to map memory to/from GPU
     //       and pass the device pointers to this function call.
-    hipblasDaxpy(handle, n, &alpha, _x, 1, _y, 1);
+    #pragma omp target data map(to: _x[0: n]) map(tofrom: _y[0:n])
+    {
+        #pragma omp target data use_device_ptr(_x, _y)
+        {
+            hipblasDaxpy(handle, n, &alpha, _x, 1, _y, 1);
+        }
+        hipDeviceSynchronize();
+    }
 
     // Print output values
     printf("Output:\n");

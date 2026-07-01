@@ -14,8 +14,12 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 # Place and bind threads to single hardware threads
 # Comment the following lines if binding is not desired
-#export OMP_PLACES=cores
-#export OMP_PROC_BIND=spread
+export OMP_NUM_THREADS=4  # use also smaller values than --cpus-per-task option for slurm
+export OMP_PLACES=cores
+export OMP_PROC_BIND=spread
+
+export OMP_DISPLAY_AFFINITY=true
+export OMP_AFFINITY_FORMAT="Process %P level %L thread %0.4n/%0.4N on node %H core %A"
 
 # Run the program
-srun ./hello.x
+srun ./a.out

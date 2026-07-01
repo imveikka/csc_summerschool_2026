@@ -12,9 +12,21 @@ int main(void)
     printf("Main thread: initial var = %d\n", var);
     #pragma omp parallel firstprivate(var)
     {
+        // Task: single-thread execution (add before first print)
+        //#pragma omp masked filter(omp_get_num_threads() - 1)
+        //#pragma omp single nowait
+
+        // Task: Synchronization (add before var reassignment)
+        //#pragma omp barrier
+
+        // Task: Critical regions (wrap around prints)
+
+        //# pragma omp critical
+        {
         printf("Thread  %3d: initial var = %d\n", omp_get_thread_num(), var);
         var = omp_get_thread_num();
         printf("Thread  %3d:   final var = %d\n", omp_get_thread_num(), var);
+        }
     }
     printf("Main thread:   final var = %d\n", var);
 

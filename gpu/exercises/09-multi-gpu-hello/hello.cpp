@@ -5,6 +5,7 @@
 #include <mpi.h>
 #include <hip/hip_runtime.h>
 #include <cstdio>
+#include "../error_checking.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -19,15 +20,19 @@ int main(int argc, char* argv[]) {
   int processor_name_length;
   MPI_Get_processor_name(processor_name, &processor_name_length);
 
-  int num_devices = 0; 
-  int my_device = -1;
+  int num_devices, my_device, node_rank;
 
-  int node_rank;
   // TODO (part b) obtain node local rank by creating "SHARED" communicator 
   MPI_Comm node_comm;
+  MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED,
+                      0, MPI_INFO_NULL, &node_comm);
 
   // TODO (part a) query number of devices to num_devices
+  HIP_ERRCHK(hipGetDeviceCount(&num_devices));
   // TODO (part b) set different device for each local MPI rank
+  MPI_Comm_rank(node_comm, &node_rank);
+  my_device = node_rank % num_devices;
+  HIP_ERRCHK(hipSetDevice(my_device));
 
   if (0 == rank) {
     printf("Total number of MPI processes: %d\n", size);

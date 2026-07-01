@@ -49,6 +49,7 @@ __global__ void histogram_one_block_per_bin(const int* __restrict__ bins,
     // WRITE THE KERNEL HERE. 
     // HINT:
     // every thread "owns" a cell in shared memory. we "split" the array across the threads of every block, and when the value is the one that should be in the bin (remember every block "owns" one bin) then they increment the thread local counter. When all the values in the array are evaluated, we perform a reduction from the shared memory values and only the thread 0 writes in global memory
+    __shared__ int bins_s[256];
 
 }
 
@@ -173,7 +174,12 @@ int main(int argc, char** argv)
         HIP_ERRCHK(hipMemcpy(d_bins, h_bins.data(), N * sizeof(int), hipMemcpyHostToDevice));
         HIP_ERRCHK(hipMemset(d_hist, 0, num_bins * sizeof(counter_t)));
 
+        hipEvent_t start, stop;
+        HIP_ERRCHK(hipEventCreate(&start));
+        HIP_ERRCHK(hipEventCreate(&stop));
         
+        
+        HIP_ERRCHK(hipEventRecord(start, 0));
         switch (algorithm) {
             case 1:
                 histogram_bins_v1(d_bins, N, d_hist, num_bins);
@@ -195,8 +201,12 @@ int main(int argc, char** argv)
                 printf( "we don't have that many implementations, select a value from 1 to 4\n");
                 break;
         }
- 
+        HIP_ERRCHK(hipEventRecord(stop, 0));
+        HIP_ERRCHK(hipStreamSynchronize(0));
 
+        float ms;
+        HIP_ERRCHK(hipEventElapsedTime(&ms, start, stop));
+ 
         std::vector<counter_t> h_hist(num_bins);
         HIP_ERRCHK(hipMemcpy(h_hist.data(), d_hist, num_bins * sizeof(counter_t), hipMemcpyDeviceToHost));
 
@@ -204,6 +214,10 @@ int main(int argc, char** argv)
         unsigned long long sum = 0ULL;
         for (int b = 0; b < num_bins; ++b) sum += h_hist[b];
         printf("[int-bins] Sum = %llu (expected %zu)\n", (unsigned long long)sum, N);
+        printf("Elapsed time: %.3f ms.\n", ms);
+
+        HIP_ERRCHK(hipEventDestroy(start));
+        HIP_ERRCHK(hipEventDestroy(stop));
 
         HIP_ERRCHK(hipFree(d_bins));
         HIP_ERRCHK(hipFree(d_hist));

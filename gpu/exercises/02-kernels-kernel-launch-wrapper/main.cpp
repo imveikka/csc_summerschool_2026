@@ -7,7 +7,7 @@
 #include <assert.h>
 
 // This file contains the kernel launch macro
-#include "../error_checking.hpp"
+#include "error_checking.hpp"
 
 __global__ void hello(int32_t num_blocks, int32_t num_threads) {
     assert(num_blocks != 10);
@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     // TODO: Wrap this kernel launch with the kernel launch macro, then compile
     // and run the program with different arguments.
-    hello<<<num_blocks, num_threads>>>(num_blocks, num_threads);
+    LAUNCH_KERNEL(hello, num_blocks, num_threads, 0, 0, num_blocks, num_threads);
 
     [[maybe_unused]] const auto result = hipDeviceSynchronize();
 

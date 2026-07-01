@@ -10,7 +10,7 @@ int main(void)
     int var = 42;
 
     printf("Main thread: initial var = %d\n", var);
-    #pragma omp parallel
+    #pragma omp parallel firstprivate(var)
     {
         printf("Thread  %3d: initial var = %d\n", omp_get_thread_num(), var);
         var = omp_get_thread_num();
