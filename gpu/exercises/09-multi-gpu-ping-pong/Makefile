@@ -4,7 +4,6 @@
 
 # LUMI-G
 
-<<<<<<< HEAD
 # Puhti
 HIPCC = CC
 LDFLAGS = -xhip -O3
@@ -15,8 +14,3 @@ ping-pong: ping-pong.cpp
 .PHONY: clean
 clean:
 	rm -f ping-pong
-=======
-ping-pong: ping-pong.cpp
-	CC -xhip ping-pong.cpp -o ping-pong
-
->>>>>>> 5655df11 (multi-gpu-ping-pong Makefile LUMIfied)
